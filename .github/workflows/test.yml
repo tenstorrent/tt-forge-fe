@@ -102,7 +102,7 @@ jobs:
       runs-on: ${{ steps.set-inputs.outputs.runs-on }}
       tests_to_filter: ${{ steps.set-inputs.outputs.tests_to_filter }}
       run_id: ${{ steps.set-inputs.outputs.runid }}
-      continue_on_crash: ${{ inputs.on-crash == 'Continue' }}
+      continue_on_crash: ${{ steps.set-inputs.outputs.continue_on_crash }}
     steps:
       - name: Inputs Management
         id: set-inputs
@@ -122,6 +122,11 @@ jobs:
           echo "runs-on=[{\"runs-on\": \"${{ inputs.runs-on }}\"}]" >> $GITHUB_OUTPUT
           echo "tests_to_filter=${{ inputs.tests_to_filter }}" >> $GITHUB_OUTPUT
           echo "test_mark=${{ inputs.test_mark }}" >> $GITHUB_OUTPUT
+          if [ "${{ inputs.on-crash }}" = "Continue" ]; then
+            echo "continue_on_crash=true" >> $GITHUB_OUTPUT
+          else
+            echo "continue_on_crash=false" >> $GITHUB_OUTPUT
+          fi
 
   build:
     needs:
@@ -151,4 +156,4 @@ jobs:
       sh-runner: ${{ inputs.sh-runner }}
       tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}
-      continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash }}
+      continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash == 'true' }}
