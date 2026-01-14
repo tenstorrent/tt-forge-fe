@@ -52,12 +52,17 @@ on:
         description: 'Filter specific tests (comma separated)'
         required: false
         type: string
+      enable-verbose-output:
+        description: 'Enable verbose pytest output (-svv flag). Shows print statements and detailed test execution information'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   packages: write
   checks: write
 
-run-name: "Test (Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Run ID: ${{ inputs.workflow_runners }} - MLIR Override: ${{ inputs.mlir_override }} - Tests to Filter: ${{ inputs.tests_to_filter }})"
+run-name: "Test (Mark: ${{ inputs.test_mark }} - ${{ inputs.sh-runner && format('{0}-shared', inputs.runs-on) || (inputs.runs-on) }} - ${{ inputs.test_group_cnt }} - Run ID: ${{ inputs.workflow_runners }} - MLIR Override: ${{ inputs.mlir_override }} - Tests to Filter: ${{ inputs.tests_to_filter }}) - Verbose Output: ${{ inputs.enable-verbose-output }}"
 
 jobs:
 
@@ -76,9 +81,10 @@ jobs:
           echo "- Workflow Runners (Run ID): ${{ inputs.workflow_runners }}" >> $GITHUB_STEP_SUMMARY
           echo "- MLIR Override: ${{ inputs.mlir_override }}" >> $GITHUB_STEP_SUMMARY
           echo "- Tests to Filter: ${{ inputs.tests_to_filter }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Verbose Output: ${{ inputs.enable-verbose-output }}" >> $GITHUB_STEP_SUMMARY
       - name: Save inputs to file
         run: |
-          echo '{ "branch_name": "${{ github.ref_name }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "workflow_runners": "${{ inputs.workflow_runners }}", "mlir_override": "${{ inputs.mlir_override }}", "tests_to_filter": "${{ inputs.tests_to_filter }}" }' > inputs.json
+          echo '{ "branch_name": "${{ github.ref_name }}", "test_mark": "${{ inputs.test_mark }}", "runs-on": "${{ inputs.runs-on }}", "sh-runner": "$${{ inputs.sh-runner }}", "test_group_cnt": "${{ inputs.test_group_cnt }}", "on-crash": "${{ inputs.on-crash }}", "workflow_runners": "${{ inputs.workflow_runners }}", "mlir_override": "${{ inputs.mlir_override }}", "tests_to_filter": "${{ inputs.tests_to_filter }}", "enable-verbose-output": "${{ inputs.enable-verbose-output }}" }' > inputs.json
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -157,3 +163,4 @@ jobs:
       tests_to_filter: ${{ needs.set-inputs.outputs.tests_to_filter }}
       run_id: ${{ needs.set-inputs.outputs.run_id }}
       continue-on-crash: ${{ needs.set-inputs.outputs.continue_on_crash == 'true' }}
+      enable-verbose-output: ${{ inputs.enable-verbose-output }}
