@@ -2,8 +2,6 @@
 
 # SPDX-License-Identifier: Apache-2.0
 import pytest
-import torch
-import onnx
 
 import forge
 from forge.forge_property_utils import (
@@ -15,20 +13,7 @@ from forge.forge_property_utils import (
 )
 from forge.verify.verify import verify
 
-from test.utils import fetch_model, yolov5_loader
-
-base_url = "https://github.com/ultralytics/yolov5/releases/download/v7.0"
-
-
-def generate_model_yoloV5I320_imgcls_torchhub_pytorch(variant, size):
-    name = "yolov5" + size
-
-    model = fetch_model(name, f"{base_url}/{name}.pt", yolov5_loader, variant=variant)
-
-    input_shape = (1, 3, 320, 320)
-    input_tensor = torch.rand(input_shape)
-    return model, [input_tensor], {}
-
+from test.models.onnx.vision.yolo.model_utils.yolov5_utils import load_model_and_inputs
 
 size = [
     pytest.param("n", id="yolov5n", marks=pytest.mark.pr_models_regression),
@@ -56,36 +41,18 @@ def test_yolov5_320x320(size, forge_tmp_path):
         suffix="320x320",
     )
 
-    framework_model, inputs, _ = generate_model_yoloV5I320_imgcls_torchhub_pytorch(
-        "ultralytics/yolov5",
-        size=size,
-    )
+    # Load model
+    onnx_model, inputs = load_model_and_inputs(size, forge_tmp_path)
 
-    # Export to ONNX
-    onnx_path = f"{forge_tmp_path}/yolov5{size}_320x320.onnx"
-    torch.onnx.export(
-        framework_model,
-        inputs[0],
-        onnx_path,
-        input_names=["input"],
-        output_names=["output"],
-        opset_version=17,
-    )
-
-    onnx_model = onnx.load(onnx_path)
-    onnx.checker.check_model(onnx_model)
+    # Create ONNX module and compile
     onnx_module = forge.OnnxModule(module_name, onnx_model)
 
     # Compile ONNX
     compiled_model = forge.compile(
-        onnx_model,
+        onnx_module,
         sample_inputs=inputs,
         module_name=module_name,
     )
 
     # Verify
-    verify(
-        inputs,
-        onnx_module,
-        compiled_model,
-    )
+    verify(inputs, onnx_module, compiled_model)

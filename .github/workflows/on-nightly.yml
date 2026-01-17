@@ -8,11 +8,6 @@ permissions:
   packages: write
   checks: write
 
-# Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
-env:
-  DOCKER_CACHE_ROOT: /mnt/dockercache
-  IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
-
 jobs:
   docker-build:
     uses: ./.github/workflows/build-image.yml
@@ -40,3 +35,4 @@ jobs:
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}]'
       tests_to_filter: 'forge/test/models/tensorflow,forge/test/models/onnx,forge/test/models/paddlepaddle'
+      enable-verbose-output: true

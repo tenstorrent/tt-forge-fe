@@ -20,10 +20,6 @@ permissions:
   id-token: write
   actions: write
 
-# Set cache root to avoid IRD_LF_CACHE error when loading CenterNet ONNX model in CI
-env:
-  DOCKER_CACHE_ROOT: /mnt/dockercache
-  IRD_LF_CACHE: ${{ vars.IRD_LF_CACHE }}
 
 jobs:
   spdx:
@@ -78,6 +74,7 @@ jobs:
       docker-image: ${{ needs.docker-build.outputs.docker-image }}
       run_id: ${{ github.run_id }}
       runs-on: '[{"runs-on": "n150"}, {"runs-on": "n300"}]'
+      enable-verbose-output: true
 
   check-all-green:
     if: always()
