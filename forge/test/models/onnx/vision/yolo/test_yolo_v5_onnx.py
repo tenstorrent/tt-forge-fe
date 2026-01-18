@@ -16,7 +16,7 @@ from forge.verify.verify import verify
 from test.models.onnx.vision.yolo.model_utils.yolov5_utils import load_model_and_inputs
 
 size = [
-    pytest.param("n", id="yolov5n", marks=pytest.mark.pr_models_regression),
+    pytest.param("n", id="yolov5n"),
     pytest.param("s", id="yolov5s"),
     pytest.param("m", id="yolov5m"),
     pytest.param("l", id="yolov5l"),
