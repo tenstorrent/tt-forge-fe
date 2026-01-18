@@ -195,6 +195,12 @@ cmake --build env/build
 >
 > **NOTE:** Special care should be taken to ensure that the already built TT-MLIR environment (toolchain) version is compatible with the one TT-Forge-FE is using.
 
+> **Using a Pre-built TT-MLIR:** If you are developing on TT-MLIR and want to use your own build instead of the submodule, you can specify the path using the `TTMLIR_SOURCE_DIR` option when configuring the main build (step 8):
+> ```bash
+> cmake -G Ninja -B build -DTTMLIR_SOURCE_DIR=/path/to/tt-mlir -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
+> ```
+> The build system will automatically install the required library components from your TT-MLIR build. Ensure your TT-MLIR is built with `TTMLIR_ENABLE_RUNTIME=ON`.
+
 7. Activate the virtual environment for TT-Forge-FE. (This time when you run the command, you should see a running virtual environment):
 
 ```bash

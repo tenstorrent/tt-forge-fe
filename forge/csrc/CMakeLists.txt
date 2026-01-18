@@ -7,7 +7,12 @@ set(CMAKE_PREFIX_PATH
 find_package(Python3 COMPONENTS Development REQUIRED)
 find_package(Torch REQUIRED)
 
-set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
+# TT_MLIR_ROOT_DIR can be overridden via -DTTMLIR_SOURCE_DIR for external builds
+if(DEFINED TTMLIR_SOURCE_DIR)
+    set(TT_MLIR_ROOT_DIR ${TTMLIR_SOURCE_DIR})
+else()
+    set(TT_MLIR_ROOT_DIR ${CMAKE_SOURCE_DIR}/third_party/tt-mlir)
+endif()
 set(TTMLIR_INCLUDE_DIRS
     ${TT_MLIR_ROOT_DIR}/include
     ${TT_MLIR_ROOT_DIR}/build/include
@@ -22,11 +27,11 @@ set(TTFORGE_CSRC_INCLUDES
     ${CMAKE_SOURCE_DIR}/third_party/pybind11/include
     ${CMAKE_SOURCE_DIR}/third_party/json/single_include
     ${CMAKE_SOURCE_DIR}/third_party/pybind11_json/include
-    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/include
-    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/runtime/include
-    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/include
-    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/runtime/include
-    ${CMAKE_SOURCE_DIR}/third_party/tt-mlir/include
+    ${TT_MLIR_ROOT_DIR}/build/include
+    ${TT_MLIR_ROOT_DIR}/build/runtime/include
+    ${TT_MLIR_ROOT_DIR}/build/install/include
+    ${TT_MLIR_ROOT_DIR}/runtime/include
+    ${TT_MLIR_ROOT_DIR}/include
     ${TTMLIR_TOOLCHAIN_DIR}/include
     ${Python3_INCLUDE_DIRS}
     ${TTMLIR_INCLUDE_DIRS}
@@ -66,11 +71,11 @@ add_dependencies(ttforge_csrc_objs tt-mlir)
 
 ######## ttforge_csrc ########
 
-set(TTMLIR_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/build/install/lib")
+set(TTMLIR_LIB_DIR "${TT_MLIR_ROOT_DIR}/build/install/lib")
 
 add_library(ttforge_csrc SHARED)
 
-set(METAL_LIB_DIR "${CMAKE_SOURCE_DIR}/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/build/lib")
+set(METAL_LIB_DIR "${TT_MLIR_ROOT_DIR}/third_party/tt-metal/src/tt-metal/build/lib")
 
 # Because _ttnn library doesn't have lib prefix, this is workaround to make linking work
 add_library(ttnn SHARED IMPORTED)
