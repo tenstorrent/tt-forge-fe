@@ -34,7 +34,7 @@ from forge.verify.verify import verify
 variants = [
     pytest.param(
         ModelVariant.SWIN_TINY_HF,
-        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998"),
+        marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2998"),
     ),
     pytest.param(ModelVariant.SWINV2_TINY_HF, marks=pytest.mark.xfail),
 ]
@@ -129,7 +129,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2998")
 @pytest.mark.parametrize("variant", variants)
 def test_swin_torchvision(variant):
 

@@ -18,7 +18,7 @@
 # Would you like to create ops package inside the tests package? [Y/N] : Y
 
 # OUTPUT:
-# tt-forge-fe/forge/test/models/
+# tt-forge-onnx/forge/test/models/
 # |-- __init__.py
 # |
 # `-- pytorch

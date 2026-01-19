@@ -251,7 +251,7 @@ def get_git_commit_hash(repo_path: str = ".") -> str:
 def get_tt_mlir_commit_hash() -> str:
     """
     Get tt-mlir SHA from the git submodule.
-    In tt-forge-fe, tt-mlir is a git submodule, so we get the commit hash directly.
+    In tt-forge-onnx, tt-mlir is a git submodule, so we get the commit hash directly.
     """
     mlir_path = "third_party/tt-mlir"
     if not os.path.exists(mlir_path):

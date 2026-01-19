@@ -22,7 +22,7 @@ variants = [
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2998")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2998")
 @pytest.mark.parametrize("variant", variants)
 def test_clip_pytorch(variant):
     # Record Forge Property

@@ -21,7 +21,7 @@ from third_party.tt_forge_models.yolov3.pytorch import ModelLoader  # isort:skip
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746")
 def test_yolo_v3(forge_tmp_path):
     # Record Forge Property
     module_name = record_model_properties(

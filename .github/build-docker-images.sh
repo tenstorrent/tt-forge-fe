@@ -5,11 +5,11 @@
 
 set -e
 
-REPO=tenstorrent/tt-forge-fe
-BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ubuntu-22-04
-CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ci-ubuntu-22-04
-BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-base-ird-ubuntu-22-04
-IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-fe-ird-ubuntu-22-04
+REPO=tenstorrent/tt-forge-onnx
+BASE_IMAGE_NAME=ghcr.io/$REPO/tt-forge-onnx-base-ubuntu-22-04
+CI_IMAGE_NAME=ghcr.io/$REPO/tt-forge-onnx-ci-ubuntu-22-04
+BASE_IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-onnx-base-ird-ubuntu-22-04
+IRD_IMAGE_NAME=ghcr.io/$REPO/tt-forge-onnx-ird-ubuntu-22-04
 
 # Compute the hash of the Dockerfile
 DOCKER_TAG=$(./.github/get-docker-tag.sh)

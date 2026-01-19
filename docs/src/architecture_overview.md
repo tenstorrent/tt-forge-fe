@@ -1,6 +1,6 @@
 # Architecture Overview
 
-TT-Forge is a comprehensive compiler designed to facilitate the development and optimization of machine learning models. It encompasses various components, each serving a specific purpose in the compiling and running machine learning pipelines. This document provides an overview of the key components with focus on [TT-Forge-FE](https://github.com/tenstorrent/tt-forge-fe).
+TT-Forge is a comprehensive compiler designed to facilitate the development and optimization of machine learning models. It encompasses various components, each serving a specific purpose in the compiling and running machine learning pipelines. This document provides an overview of the key components with focus on [TT-Forge-ONNX](https://github.com/tenstorrent/tt-forge-onnx).
 
 ### Table of contents
 - [TT-Forge Overview](#tt-forge-overview)
@@ -11,9 +11,9 @@ TT-Forge is a comprehensive compiler designed to facilitate the development and 
      - [Forge Compile Passes](#forge-compile-passes)
    - [Partition Graph](#partition-graph)
    - [Construct Inputs, Constants and Ops](#construct-inputs-constants-and-ops)
-   - [Generate Forge-FE Module](#generate-forge-fe-module)
-   - [Standalone Forge-FE Module](#standalone-forge-fe-module)
-- [TT-Forge-FE Overview](#tt-forge-fe-overview)
+   - [Generate Forge-ONNX Module](#generate-forge-onnx-module)
+   - [Standalone Forge-ONNX Module](#standalone-forge-onnx-module)
+- [TT-Forge-ONNX Overview](#tt-forge-onnx-overview)
    - [Initialize Compile](#initialize-compile)
    - [Generate Initial Graph (TT-TVM)](#generate-initial-graph-tt-tvm)
    - [Post Initial Graph passes](#post-initial-graph-passes)
@@ -57,17 +57,17 @@ Coming soon!
 
 Coming soon!
 
-### Generate Forge-FE Module
+### Generate Forge-ONNX Module
 
 Coming soon!
 
-### Standalone Forge-FE Module
+### Standalone Forge-ONNX Module
 
 Coming soon!
 
-## TT-Forge-FE Overview
+## TT-Forge-ONNX Overview
 
-![Forge-FE Overview](imgs/compiler_arch/forge-fe_overview.svg "Forge-FE Overview")
+![Forge-ONNX Overview](imgs/compiler_arch/forge-onnx_overview.svg "Forge-ONNX Overview")
 
 ### Initialize Compile
 

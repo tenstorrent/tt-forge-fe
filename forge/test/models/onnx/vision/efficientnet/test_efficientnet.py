@@ -89,10 +89,10 @@ variants = [
     "efficientnet-b4",
     "efficientnet-b5",
     pytest.param(
-        "efficientnet-b6", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3126")
+        "efficientnet-b6", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/3126")
     ),
     pytest.param(
-        "efficientnet-b7", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/3126")
+        "efficientnet-b7", marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/3126")
     ),
 ]
 

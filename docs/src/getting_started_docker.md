@@ -1,11 +1,11 @@
 # Getting Started with Docker
-This document walks you through how to set up TT-Forge-FE using a Docker image. There are two other available options for getting started:
+This document walks you through how to set up TT-Forge-ONNX using a Docker image. There are two other available options for getting started:
 * [Installing a Wheel](getting_started.md) - if you do not want to use Docker, and prefer to use a virtual environment by itself instead, use this method.
-* [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-FE further, you must build from source, and should use this method.
+* [Building from Source](getting_started_build_from_source.md) - if you plan to develop TT-Forge-ONNX further, you must build from source, and should use this method.
 
-> **NOTE:** TT-Forge-FE is a framework agnostic frontend that can convert any model to a generic
+> **NOTE:** TT-Forge-ONNX is a framework agnostic frontend that can convert any model to a generic
 > Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
-> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
+> Tenstorrent hardware. TT-Forge-ONNX is for use with single-chip systems only.
 
 The following topics are covered:
 
@@ -15,7 +15,7 @@ The following topics are covered:
 * [Where to Go Next](#where-to-go-next)
 
 > **NOTE:** If you encounter issues, please request assistance on the
->[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
+>[TT-Forge-ONNX Issues](https://github.com/tenstorrent/tt-forge-onnx/issues) page.
 
 ## Configuring Hardware
 Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
@@ -142,14 +142,14 @@ git submodule update --init --recursive
 5. For this set up, the **mobile_netv2_demo.py** is used. Navigate into **tt-forge** and run the following command:
 
 ```bash
-python demos/tt-forge-fe/cnn/mobile_netv2_demo.py
+python demos/tt-forge-onnx/cnn/mobile_netv2_demo.py
 ```
 
 6. If all goes well you will get a prediction stating the best guess for what the image is, and the probability that the model identified the image correctly.
 
 ## Where to Go Next
 
-Now that you have set up TT-Forge-FE, you can compile and run your own models. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options.
+Now that you have set up TT-Forge-ONNX, you can compile and run your own models. See the [TT-Forge-ONNX folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-onnx) for more demo options.
 
 For a quick start about how to compile a model, here is a code sample. Note the introduction of the `forge.compile` call:
 
