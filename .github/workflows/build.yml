@@ -133,7 +133,7 @@ jobs:
           #Inspect the wheel build type on wheel file without installing the wheel
           pip install wheel-inspect
           # Expand the glob pattern to get the actual wheel filename
-          WHEEL_FILE=$(ls dist/tt_forge_fe*.whl)
+          WHEEL_FILE=$(ls dist/tt_forge_onnx*.whl)
           echo "Found wheel: $WHEEL_FILE"
           wheel_summary=$(wheel2json "$WHEEL_FILE" | jq -r '.dist_info.metadata.summary')
           # Lowercase the build type

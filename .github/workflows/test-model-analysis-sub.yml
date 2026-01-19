@@ -178,7 +178,7 @@ jobs:
 
           # Expand matching wheels into arrays; fail if none found
           tvm_wheels=( "$ART_DIR"/tt_tvm*.whl )
-          forge_wheels=( "$ART_DIR"/tt_forge_fe*.whl )
+          forge_wheels=( "$ART_DIR"/tt_forge_onnx*.whl )
 
           if [[ ${#tvm_wheels[@]} -eq 0 ]]; then
             echo "ERROR: No tt_tvm wheel found in $ART_DIR"
@@ -189,7 +189,7 @@ jobs:
           if [[ ${#forge_wheels[@]} -ne 0 ]]; then
             pip install "${forge_wheels[@]}" --force-reinstall || true
           else
-            echo "No tt_forge_fe wheel found; continuing."
+            echo "No tt_forge_onnx wheel found; continuing."
           fi
 
       - name: Set caching env variables

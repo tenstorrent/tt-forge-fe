@@ -319,7 +319,7 @@ packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 
 setup(
-    name="tt_forge_fe",
+    name="tt_forge_onnx",
     version=version,
     description=build_summary,
     install_requires=requirements,

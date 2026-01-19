@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel", "pip"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tt_forge_fe"
+name = "tt_forge_onnx"
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [
