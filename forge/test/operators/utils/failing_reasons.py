@@ -396,7 +396,7 @@ class FailingReasons(Enum):
             ExceptionCheck(
                 # matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
                 # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-                # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
+                # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1542: is_floating_point(input_tensor_a.get_dtype())
                 # E       info:
                 # E       Unsupported data format
                 # E       backtrace:
@@ -608,9 +608,9 @@ class FailingReasons(Enum):
     VERIFICATION_FAILED_SPECIAL_VALUES = FailingReason(
         description="Verification failed due to special values",
         checks=[
-            # div	RuntimeError: TT_ASSERT @ tt-forge-fe/forge/csrc/verif/verif_ops.cpp:361: !has_special_values(a)
+            # div	RuntimeError: TT_ASSERT @ tt-forge-onnx/forge/csrc/verif/verif_ops.cpp:361: !has_special_values(a)
             # >       if not verif.all_close(fw_out, co_out, rtol=self.rtol, atol=self.atol):
-            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:362: !has_special_values(b)
+            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp:362: !has_special_values(b)
             # E       info:
             # E       Tensor b contains NaN/Inf values
             # E       backtrace:
@@ -634,9 +634,9 @@ class FailingReasons(Enum):
                     M.last_line(M.contains("forge/verify/value_checkers.py:")),
                 ],
             ),
-            # RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false
+            # RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false
             # >           pcc = verif.calculate_tensor_pcc(a, b)
-            # E           RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false
+            # E           RuntimeError: TT_ASSERT @ /__w/tt-forge-onnx/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp:549: has_special_values(cov) == false
             # E           info:
             # E           Covariance matrix contains NaN/Inf values - possibly due to an overflow
             # E           backtrace:
@@ -762,27 +762,27 @@ class FailingReasons(Enum):
                 ],
             ),
             #                  Always |    FATAL | DataType mismatch, expected INT32, got FLOAT32
-            # DEBUG_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/runtime/lib/ttnn/debug/debug_apis.cpp:30: expectedDataType == actualDataType
+            # DEBUG_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/runtime/lib/ttnn/debug/debug_apis.cpp:30: expectedDataType == actualDataType
             # backtrace:
             #  --- tt::runtime::ttnn::debug::checkTensorRefMatchesTTNNTensor(tt::target::ttnn::TensorRef const*, tt::tt_metal::Tensor const&)
             #  --- tt::runtime::ttnn::ProgramTensorPool::insertTTNNTensorAndValidate(tt::target::ttnn::TensorRef const*, tt::tt_metal::Tensor const&, bool)
-            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x2c1385) [0x7f0acaabd385]
+            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x2c1385) [0x7f0acaabd385]
             #  --- tt::runtime::ttnn::operations::eltwise::unary::run(tt::target::ttnn::EltwiseUnaryCompositeOp const*, tt::runtime::ttnn::ProgramContext&)
             #  --- tt::runtime::ttnn::ProgramExecutor::runOperation(tt::target::ttnn::Operation const*)
             #  --- tt::runtime::ttnn::ProgramExecutor::execute()
             #  --- tt::runtime::ttnn::runProgram(std::shared_ptr<tt::tt_metal::distributed::MeshDevice>, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             #  --- tt::runtime::ttnn::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
-            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x195cfa) [0x7f0aca991cfa]
-            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x19324c) [0x7f0aca98f24c]
+            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x195cfa) [0x7f0aca991cfa]
+            #  --- /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/build/install/lib/libTTMLIRRuntime.so(+0x19324c) [0x7f0aca98f24c]
             #  --- tt::runtime::submit(tt::runtime::Device, tt::runtime::Binary, unsigned int, std::vector<tt::runtime::Tensor, std::allocator<tt::runtime::Tensor> >&)
             #  --- tt::run_program(tt::runtime::Binary&, int, std::vector<tt::Tensor, std::allocator<tt::Tensor> >&)
             #  --- tt::ModelState::run_program(tt::ProgramType, std::vector<tt::Tensor, std::allocator<tt::Tensor> >)
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0xa7e5f6) [0x7f0ad669f5f6]
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0xa7e59f) [0x7f0ad669f59f]
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0xa7e521) [0x7f0ad669f521]
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0xa7e472) [0x7f0ad669f472]
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0xa7e389) [0x7f0ad669f389]
-            #  --- /localdev/vbrkic/src/forge/tt-forge-fe/forge/forge/_C.so(+0x62a0ee) [0x7f0ad624b0ee]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0xa7e5f6) [0x7f0ad669f5f6]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0xa7e59f) [0x7f0ad669f59f]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0xa7e521) [0x7f0ad669f521]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0xa7e472) [0x7f0ad669f472]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0xa7e389) [0x7f0ad669f389]
+            #  --- /localdev/vbrkic/src/forge/tt-forge-onnx/forge/forge/_C.so(+0x62a0ee) [0x7f0ad624b0ee]
             #
             # # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
             # # E       RuntimeError: Fatal error
@@ -985,13 +985,13 @@ class FailingReasons(Enum):
                 class_name="RuntimeError",
                 component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
-                    # tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
+                    # tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/concat/device/concat_device_operation.cpp:47: !in_ref.get_shape().has_tile_padding(this->dim)
                     M.contains("!in_ref.get_shape().has_tile_padding(this->dim)"),
                 ],
             ),
-            # floor	RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_
+            # floor	RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_width_multi_core_program_factory.cpp:27: tt::exception
+            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/eltwise/binary/device/broadcast_height_and_width_multi_core_program_factory.cpp:27: tt::exception
             # E       info:
             # E       BinaryOpType cannot be mapped to BcastOpMath
             # E       backtrace:
@@ -1039,7 +1039,7 @@ class FailingReasons(Enum):
             # E         2: tvm::DiagnosticRenderer::Render(tvm::DiagnosticContext const&)
             # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<void (tvm::DiagnosticContext)>::AssignTypedLambda<tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1}>(tvm::TerminalRenderer(std::ostream&)::{lambda(tvm::DiagnosticContext const&)#1})::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
             # E         0: tvm::ReportAt(tvm::DiagnosticContext const&, std::ostream&, tvm::Span const&, tvm::Diagnostic const&)
-            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/ir/diagnostic.cc", line 267
+            # E         File "/__w/tt-forge-onnx/tt-forge-onnx/third_party/tvm/src/ir/diagnostic.cc", line 267
             # E       TVMError: The source maps are not populated for this module. Please use `tvm.relay.transform.AnnotateSpans` to attach source maps for error reporting.
             # E       Error: tensor type `Tensor[(1, 1, 1), float32]` has 3 dimensions, while `float32` has 0 dimensions
             # /localdev/kmilanovic/src/forge/forge_wheels/venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: TVMError
@@ -1066,7 +1066,7 @@ class FailingReasons(Enum):
             # # INFO     | forge.compiled_graph_state:__call__:247  Running model forward on device...
             # # Always | FATAL    | Out of Memory: Not enough space to allocate 896204800 B DRAM buffer across 12 banks, where each bank needs to store 74686464 B
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception
+            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/bank_manager.cpp:141: tt::exception
             # E       info:
             # E       Out of Memory: Not enough space to allocate 4063232000 B DRAM buffer across 12 banks, where each bank needs to store 338604032 B
             # E       backtrace:
@@ -1116,13 +1116,13 @@ class FailingReasons(Enum):
             # ExceptionCheck(
             #     class_name="RuntimeError",
             #     message=[
-            #         M.contains("tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:143"),
+            #         M.contains("tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:143"),
             #     ]
             # ),
             # ExceptionCheck(
             #     class_name="RuntimeError",
             #     message=[
-            #         M.contains("tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145"),
+            #         M.contains("tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/allocator/allocator.cpp:145"),
             #     ]
             # ),
         ],
@@ -1131,9 +1131,9 @@ class FailingReasons(Enum):
     CIRCULAR_BUFFER_EXCEEDS_L1 = FailingReason(
         description="Circular buffer exceeds L1 cache size",
         checks=[
-            # concatenate	RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
+            # concatenate	RuntimeError: TT_THROW @ /__w/tt-forge-onnx/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_THROW @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
+            # E       RuntimeError: TT_THROW @ /__w/tt-forge-onnx/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:939: tt::exception
             # E       info:
             # E       Statically allocated circular buffers on core range [(x=0,y=0) - (x=7,y=7)] grow to 2140832 B which is beyond max L1 size of 1499136 B
             # E       backtrace:
@@ -1175,7 +1175,7 @@ class FailingReasons(Enum):
         checks=[
             # conv2d	RuntimeError: TT_THROW @ tt-metal/tt_metal/impl/program/program.cpp:791: tt::exception
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:791: tt::exception
+            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/impl/program/program.cpp:791: tt::exception
             # E       info:
             # E       Statically allocated circular buffers in program 6914 clash with L1 buffers on core range [(x=0,y=0) - (x=7,y=7)]. L1 buffer allocated at 1030272 and static circular buffer region ends at 1473568
             # E       backtrace:
@@ -1265,7 +1265,7 @@ class FailingReasons(Enum):
                 component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.regex(
-                        "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:\\d+: tt::exception"
+                        "tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/core/core.cpp:\\d+: tt::exception"
                     ),
                 ],
             ),
@@ -1344,7 +1344,7 @@ class FailingReasons(Enum):
                 component=ComponentChecker.NONE.value,  # TODO remove
                 message=[
                     M.contains(
-                        "tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize/device/tilize_op.cpp"
+                        "tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/tilize/device/tilize_op.cpp"
                     ),
                 ],
             ),
@@ -1364,9 +1364,9 @@ class FailingReasons(Enum):
         description="Normalized index out of bounds",
         checks=[
             ExceptionCheck(
-                # repeat_interleave	RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:57: normalized_index >= 0 and normalized_i
+                # repeat_interleave	RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:57: normalized_index >= 0 and normalized_i
                 # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-                # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:57: normalized_index >= 0 and normalized_index < rank
+                # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/tt_metal/common/shape.cpp:57: normalized_index >= 0 and normalized_index < rank
                 # E       info:
                 # E       Index is out of bounds for the rank, should be between 0 and 0 however is 18446744073709551615
                 # E       backtrace:
@@ -1444,9 +1444,9 @@ class FailingReasons(Enum):
     UNSUPPORTED_AXIS = FailingReason(
         description="Unsupported axis parameter",
         checks=[
-            # softmax	RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
+            # softmax	RuntimeError: TT_FATAL @ /__w/tt-forge-onnx/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-onnx/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_softmax/device/moreh_softmax_device_operation.cpp:94: input.dtype() == DataType::BFLOAT16 || input.dtype() == DataType::BFLOAT8_B
             # E       info:
             # E       Inputs must be of bfloat16 or bfloat8_b type
             # E       backtrace:
@@ -1571,7 +1571,7 @@ class FailingReasons(Enum):
             # E         2: tvm::relay::TypeSolver::Solve()
             # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
             # E         0: bool tvm::relay::MatmulRel<tvm::relay::MatmulAttrs>(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
-            # E         File "/localdev/vbrkic/src/forge/tt-forge-fe/third_party/tvm/src/relay/op/nn/nn.h", line 109
+            # E         File "/localdev/vbrkic/src/forge/tt-forge-onnx/third_party/tvm/src/relay/op/nn/nn.h", line 109
             # E       InternalError: Check failed: (static_cast<int>(tensor_b->shape.size()) == 2) is false:
             # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
@@ -1602,7 +1602,7 @@ class FailingReasons(Enum):
             # E         2: tvm::relay::TypeSolver::Solve()
             # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
             # E         0: tvm::relay::SqueezeRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
-            # E         File "/localdev/vbrkic/src/forge/tt-forge-fe/third_party/tvm/src/relay/op/tensor/transform.cc", line 2507
+            # E         File "/localdev/vbrkic/src/forge/tt-forge-onnx/third_party/tvm/src/relay/op/tensor/transform.cc", line 2507
             # E       InternalError: Check failed: *axis_ptr == 1 (2 vs. 1) : cannot squeeze axis with dimension not equal to 1
             # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
@@ -1637,7 +1637,7 @@ class FailingReasons(Enum):
             # E         2: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
             # E         1: tvm::relay::ReshapeRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
             # E         0: tvm::relay::InferNewShape(tvm::runtime::Array<tvm::PrimExpr, void> const&, tvm::Attrs const&, bool)
-            # E         File "/localdev/vbrkic/src/forge/tt-forge-fe/third_party/tvm/src/relay/op/tensor/transform.cc", line 698
+            # E         File "/localdev/vbrkic/src/forge/tt-forge-onnx/third_party/tvm/src/relay/op/tensor/transform.cc", line 698
             # E       InternalError: Check failed: src_idx < ishape.size() (2 vs. 1) :
             # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
@@ -1698,7 +1698,7 @@ class FailingReasons(Enum):
         checks=[
             # cumsum	RuntimeError: TT_ASSERT @ ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:23: dim == 0 || dim == 1
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:23: dim == 0 || dim == 1
+            # E       RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/moreh/moreh_cumsum/device/moreh_cumsum_program_factory.cpp:23: dim == 0 || dim == 1
             # E       backtrace:
             # E        --- ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::ProgramFactory::create(ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::tensor_args_t const&, tt::tt_metal::Tensor&)
             # E        --- ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::tensor_return_value_t ttnn::device_operation::detail::launch_on_single_device<ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation>(tt::stl::StrongType<unsigned char, ttnn::QueueIdTag>, ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::operation_attributes_t const&, ttnn::operations::moreh::moreh_cumsum::MorehCumsumDeviceOperation::tensor_args_t const&)
@@ -1730,7 +1730,7 @@ class FailingReasons(Enum):
             # max	RuntimeError: TT_FATAL @ ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())	UNCLASSIFIED	6
             # sum	RuntimeError: TT_FATAL @ ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())	UNCLASSIFIED	36
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())
+            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/fill_pad/device/fill_pad_op.cpp:18: detail::data_type_to_size.count(input_tensor_a.get_dtype())
             # E       info:
             # E       Unsupported datatype
             # E       backtrace:
@@ -1765,7 +1765,7 @@ class FailingReasons(Enum):
             ),
             # clamp	RuntimeError: TT_THROW @ ttnn/cpp/ttnn/operations/creation.hpp:182: tt::exception
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/creation.hpp:182: tt::exception
+            # E       RuntimeError: TT_THROW @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/creation.hpp:182: tt::exception
             # E       info:
             # E       Unsupported DataType!
             # E       backtrace:
@@ -1801,7 +1801,7 @@ class FailingReasons(Enum):
         checks=[
             # matmul	matmul	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1479: a_shape[i] == b_shape[i]
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1538: a_shape[i] == b_shape[i]
+            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1538: a_shape[i] == b_shape[i]
             # E       info:
             # E       bmm (non-bcast matmul) expects input tensors of shapes BCMK*BCKN=BCMN or equivalent
             # E       backtrace:
@@ -1826,7 +1826,7 @@ class FailingReasons(Enum):
                 component=ComponentChecker.TTNN.value,
                 message=[
                     M.starts_with("TT_FATAL"),
-                    # E       RuntimeError: TT_FATAL @ ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1538: a_shape[i] == b_shape[i]
+                    # E       RuntimeError: TT_FATAL @ ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:1538: a_shape[i] == b_shape[i]
                     M.contains("tt-metal/ttnn/cpp/ttnn/operations/matmul/device/matmul_op.cpp:"),
                     M.contains("a_shape[i] == b_shape[i]"),
                 ],
@@ -1844,7 +1844,7 @@ class FailingReasons(Enum):
         checks=[
             # transpose	RuntimeError: TT_FATAL @ tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:120: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:120: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::FLOAT32
+            # E       RuntimeError: TT_FATAL @ /proj_sw/user_dev/vbrkic/src_bgd/ttforge/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/data_movement/transpose/device/transpose_op.cpp:120: input_tensor.get_dtype() == DataType::BFLOAT16 || input_tensor.get_dtype() == DataType::FLOAT32
             # E       info:
             # E       Error
             # E       backtrace:
@@ -1890,7 +1890,7 @@ class FailingReasons(Enum):
         description="Invalid arguments to reshape",
         checks=[
             # >       self.runtime_model_state.run_program(ProgramType.Forward, self.inputs)
-            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/core/tensor/tensor_utils.cpp:54: new_volume == old_volume
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-onnx/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/core/tensor/tensor_utils.cpp:54: new_volume == old_volume
             # E       info:
             # E       Invalid arguments to reshape
             # E       backtrace:
@@ -1922,11 +1922,11 @@ class FailingReasons(Enum):
     FORGE_RUNTIME_OLD = FailingReason(
         description="Forge runtime error old",
         checks=[
-            # max	RuntimeError: TT_ASSERT @ tt-forge-fe/forge/csrc/graph_lib/shape.cpp:230: v.front() == 1
+            # max	RuntimeError: TT_ASSERT @ tt-forge-onnx/forge/csrc/graph_lib/shape.cpp:230: v.front() == 1
             # >       inserted_node_id_mapping, context.fracture_chip_id_assignments = run_post_initial_graph_passes(
             #             graph, compiler_cfg, compiler_cfg.fracture_groups
             #         )
-            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/graph_lib/shape.cpp:217: v.front() == 1
+            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-onnx/tt-forge-onnx/forge/csrc/graph_lib/shape.cpp:217: v.front() == 1
             # E       info:
             # E       Cannot squeeze a non-zero dim
             # E       backtrace:
@@ -2007,7 +2007,7 @@ class FailingReasons(Enum):
             # E         2: tvm::relay::TypeSolver::Solve()
             # E         1: tvm::runtime::PackedFuncObj::Extractor<tvm::runtime::PackedFuncSubObj<tvm::runtime::TypedPackedFunc<bool (tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>::AssignTypedLambda<bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)>(bool (*)(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&))::{lambda(tvm::runtime::TVMArgs const&, tvm::runtime::TVMRetValue*)#1}> >::Call(tvm::runtime::PackedFuncObj const*, tvm::runtime::TVMArgs, tvm::runtime::TVMRetValue*)
             # E         0: tvm::relay::SqueezeRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
-            # E         File "/localdev/vbrkic/src/forge/tt-forge-fe/third_party/tvm/src/relay/op/tensor/transform.cc", line 2507
+            # E         File "/localdev/vbrkic/src/forge/tt-forge-onnx/third_party/tvm/src/relay/op/tensor/transform.cc", line 2507
             # E       InternalError: Check failed: *axis_ptr == 1 (5 vs. 1) : cannot squeeze axis with dimension not equal to 1
             # third_party/tvm/python/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
@@ -2174,7 +2174,7 @@ class FailingReasons(Enum):
             # E         2: tvm::relay::ReduceRel(tvm::runtime::Array<tvm::Type, void> const&, int, tvm::Attrs const&, tvm::TypeReporter const&)
             # E         1: std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > tvm::relay::ReduceShapeImpl<tvm::relay::ReduceAttrs>(std::vector<tvm::PrimExpr, std::allocator<tvm::PrimExpr> > const&, tvm::relay::ReduceAttrs const*, tvm::TypeReporter const&)
             # E         0: tvm::relay::GetReduceAxes(unsigned int, tvm::runtime::Array<tvm::Integer, void> const&, bool)
-            # E         File "/__w/tt-forge-fe/tt-forge-fe/third_party/tvm/src/relay/op/tensor/reduce.cc", line 71
+            # E         File "/__w/tt-forge-onnx/tt-forge-onnx/third_party/tvm/src/relay/op/tensor/reduce.cc", line 71
             # E       InternalError: Check failed: (axis < indim) is false: Axis out of bounds in reduce operator.
             # venv/lib/python3.10/site-packages/tvm/_ffi/base.py:479: InternalError
             ExceptionCheck(
@@ -2193,7 +2193,7 @@ class FailingReasons(Enum):
     UNSUPPORTED_DILATION = FailingReason(
         description="Unsupported dilation, currently only support dilation = 1",
         checks=[
-            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-fe/tt-forge-fe/forge/csrc/ops/op_max_pool_2d.cpp:123: dilation_height == 1 && dilation_width == 1
+            # E       RuntimeError: TT_ASSERT @ /__w/tt-forge-onnx/tt-forge-onnx/forge/csrc/ops/op_max_pool_2d.cpp:123: dilation_height == 1 && dilation_width == 1
             # E       info:
             # E       info:
             # E       Currently only support dilation = 1
@@ -2214,7 +2214,7 @@ class FailingReasons(Enum):
     AUTOSHARDING_ERROR = FailingReason(
         description="autosharding could not determine valid shard scheme, please check tensor dimensions",
         checks=[
-            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:110: sw_parallel_config.has_value()
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-onnx/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/pool/generic/generic_pools.cpp:110: sw_parallel_config.has_value()
             # E       info:
             # E       autosharding could not determine valid shard scheme, please check tensor dimensions
             ExceptionCheck(
@@ -2236,7 +2236,7 @@ class FailingReasons(Enum):
     CORE_CHANNELS_MODULUS_NOT_ZERO = FailingReason(
         description="Channels: 1, num core channels: 2; channels % num_cores_channels == 0",
         checks=[
-            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-fe/tt-forge-fe/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/conv2d_utils.cpp:314: channels % num_cores_channels == 0
+            # E       RuntimeError: TT_FATAL @ /__w/tt-forge-onnx/tt-forge-onnx/third_party/tt-mlir/third_party/tt-metal/src/tt-metal/ttnn/cpp/ttnn/operations/conv/conv2d/conv2d_utils.cpp:314: channels % num_cores_channels == 0
             # E       info:
             # E       Channels: 1, num core channels: 2
             ExceptionCheck(

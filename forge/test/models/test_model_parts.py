@@ -18,7 +18,7 @@ from transformers import BartForSequenceClassification
 @pytest.mark.skip_model_analysis
 @pytest.mark.xfail(
     reason="AssertionError: Data mismatch on output 0 between framework and Forge codegen, PCC got=0.4923030518607919"
-)  # https://github.com/tenstorrent/tt-forge-fe/issues/1793
+)  # https://github.com/tenstorrent/tt-forge-onnx/issues/1793
 @pytest.mark.nightly
 def test_inplace_updation():
     class Inplace_updation(nn.Module):
@@ -408,7 +408,7 @@ def test_concat_block():
 
 @pytest.mark.nightly
 @pytest.mark.skip_model_analysis
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2899")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2899")
 @pytest.mark.parametrize(
     "tensor_size,max_length",
     [

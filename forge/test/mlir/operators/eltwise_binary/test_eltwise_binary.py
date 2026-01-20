@@ -575,7 +575,7 @@ def test_floordiv(bucket_size):
 )
 @pytest.mark.xfail(
     reason="NotImplementedError: The following operators are not implemented: ['aten::linalg_solve']"
-)  # https://github.com/tenstorrent/tt-forge-fe/issues/1991
+)  # https://github.com/tenstorrent/tt-forge-onnx/issues/1991
 def test_linalg_solve(shape):
     class linalg_solve(nn.Module):
         def __init__(self):

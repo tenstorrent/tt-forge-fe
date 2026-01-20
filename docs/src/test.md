@@ -1,6 +1,6 @@
 # Testing
 
-This page describes how to run different kinds of tests in the `tt-forge-fe` project. If you haven't built the project yet,
+This page describes how to run different kinds of tests in the `tt-forge-onnx` project. If you haven't built the project yet,
 please refer to the [Build](build.md) page.
 
 ## Unit tests
@@ -50,7 +50,7 @@ pytest -svv forge/test/mlir/test_ops.py::test_add
 
 Single operator E2E tests consists of pre configured collections of in-depth tests for each operator according to test plan.
 Tests include small models consisting of single operator with or without combination with few other operators.
-More details about test plan available on [Test template page](https://github.com/tenstorrent/tt-forge-fe/blob/main/forge/test/operators/test_plan_template.md)
+More details about test plan available on [Test template page](https://github.com/tenstorrent/tt-forge-onnx/blob/main/forge/test/operators/test_plan_template.md)
 
 To start interacting with test sweeps framework load helper commands via
 

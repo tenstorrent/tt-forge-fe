@@ -40,7 +40,7 @@ PHI_VARIANTS = [
 ]
 
 
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_causal_lm_pytorch(variant):
@@ -79,7 +79,7 @@ PHI_VARIANTS = [
 ]
 
 
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_token_classification_pytorch(variant):
@@ -119,7 +119,7 @@ PHI_VARIANTS = [
 ]
 
 
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", PHI_VARIANTS)
 def test_phi1_5_sequence_classification_pytorch(variant):

@@ -111,7 +111,7 @@ variants = [
     QAVariant.OPT_125M,
     QAVariant.OPT_350M,
     pytest.param(
-        QAVariant.OPT_1_3B, marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")]
+        QAVariant.OPT_1_3B, marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2969")]
     ),
 ]
 

@@ -34,25 +34,25 @@ variants = [
     pytest.param(
         WhisperVariant.WHISPER_TINY,
         marks=[
-            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746"),
         ],
     ),
     pytest.param(
         WhisperVariant.WHISPER_BASE,
         marks=[
-            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746"),
         ],
     ),
     pytest.param(
         WhisperVariant.WHISPER_SMALL,
         marks=[
-            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746"),
         ],
     ),
     pytest.param(
         WhisperVariant.WHISPER_MEDIUM,
         marks=[
-            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746"),
+            pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746"),
         ],
     ),
     pytest.param(

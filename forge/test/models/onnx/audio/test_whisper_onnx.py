@@ -56,7 +56,7 @@ def test_whisper_onnx(variant, forge_tmp_path):
     if variant == "openai/whisper-medium":
         pytest.xfail(reason="Skipping the test because it takes longer time to run")
     elif variant == "openai/whisper-large":
-        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2767")
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2767")
 
     # Load model (with tokenizer and feature extractor)
     processor = download_model(AutoProcessor.from_pretrained, variant)

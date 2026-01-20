@@ -1,9 +1,9 @@
-# How to run standalone MLIR, based on generated Forge-FE MLIR graphs
+# How to run standalone MLIR, based on generated Forge-ONNX MLIR graphs
 
 
-1. Change Directory to tt-mlir repo in tt-forge-fe third parties
+1. Change Directory to tt-mlir repo in tt-forge-onnx third parties
     ```bash
-    $ cd tt-forge-fe/third_party/tt-mlir
+    $ cd tt-forge-onnx/third_party/tt-mlir
     ```
 
 2. Build TTRT (once) - (Inside tt-mlir repo)
@@ -43,7 +43,7 @@
     - Generate TTNN MLIR from TTIR MLIR
         - Replace path to `system_desc.ttsys` to your corresponding path.
         ```bash
-        $ ./build/bin/ttmlir-opt --ttir-load-system-desc="path=/proj_sw/user_dev/akannan/forge/tt-forge-fe/third_party/tt-mlir/ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline softmax_check_ttir.mlir -o softmax_check_ttnn.mlir
+        $ ./build/bin/ttmlir-opt --ttir-load-system-desc="path=/proj_sw/user_dev/akannan/forge/tt-forge-onnx/third_party/tt-mlir/ttrt-artifacts/system_desc.ttsys" --ttir-to-ttnn-backend-pipeline softmax_check_ttir.mlir -o softmax_check_ttnn.mlir
         ```
 
 5. Create Flatbuffers Serialized Binary

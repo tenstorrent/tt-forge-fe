@@ -71,7 +71,7 @@ def test_mobilenetv2_onnx(variant, forge_tmp_path):
 
 
 @pytest.mark.nightly
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2746")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2746")
 @pytest.mark.parametrize("variant", [ModelVariant.MOBILENET_V2_TORCHVISION])
 def test_mobilenetv2_onnx_torchvision(variant, forge_tmp_path):
 

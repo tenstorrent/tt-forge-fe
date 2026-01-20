@@ -59,7 +59,7 @@ def test_sam(variant):
     if variant != ModelVariant.BASE:
         pytest.xfail(reason="Requires multi-chip support")
     elif variant == ModelVariant.BASE:
-        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2898")
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2898")
 
     # Load model and inputs
     loader = ModelLoader(variant=variant)
