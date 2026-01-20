@@ -97,6 +97,17 @@ class CMakeBuild(build_ext):
         self.spawn(["cmake", "--build", str(build_dir)])
         self.spawn(["cmake", "--install", str(build_dir)])
 
+        _remove_broken_symlinks(install_dir)
+
+
+def _remove_broken_symlinks(root: Path) -> None:
+    """Remove broken symlinks that would cause wheel packaging to fail."""
+    for path in root.rglob("*"):
+        if path.is_symlink() and not path.exists():
+            rel = path.relative_to(root)
+            print(f"Removing broken symlink: {rel}")
+            path.unlink()
+
 
 with open("README.md", "r") as f:
     long_description = f.read()
