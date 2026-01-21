@@ -303,7 +303,7 @@ def test_resize2d_nearest_interpolation(input_shape, scale_factor_or_size):
             32,
             42,
             marks=pytest.mark.xfail(
-                reason="AssertionError: Only support downsample with integer scale factor (https://github.com/tenstorrent/tt-forge-fe/issues/2041) "
+                reason="AssertionError: Only support downsample with integer scale factor (https://github.com/tenstorrent/tt-forge-onnx/issues/2041) "
             ),
         ),
     ],

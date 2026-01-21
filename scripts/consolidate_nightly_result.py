@@ -27,7 +27,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 # Constants
 GITHUB_TOKEN = "your access token"  # Replace with your github token
 REPO_OWNER = "tenstorrent"
-REPO_NAME = "tt-forge-fe"
+REPO_NAME = "tt-forge-onnx"
 nightly_url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/actions/runs?per_page=100"
 headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
 

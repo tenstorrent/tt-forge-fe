@@ -1,6 +1,6 @@
 # Tools
 
-This page covers setup of various tools that can help you with development of TT-Forge-FE. The sections include:
+This page covers setup of various tools that can help you with development of TT-Forge-ONNX. The sections include:
 * [Pre-commit](#pre-commit)
 * [mdbook](#mdbook)
 * [Cross Correlate Models and Ops and Export Model Variants Unique Op Configuration](#cross-correlate-models-and-ops-and-export-model-variants-unique-op-configuration)
@@ -8,7 +8,7 @@ This page covers setup of various tools that can help you with development of TT
 
 ## Pre-commit
 
-TT-Forge-FE defines various pre-commit hooks that check the code for formatting, licensing issues, etc.
+TT-Forge-ONNX defines various pre-commit hooks that check the code for formatting, licensing issues, etc.
 
 To install pre-commit, run the following command:
 
@@ -35,7 +35,7 @@ For more information visit [pre-commit](https://pre-commit.com/).
 
 ## mdbook
 
-TT-Forge-FE uses `mdbook` to generate the documentation. To install `mdbook` on Ubuntu, run the following commands:
+TT-Forge-ONNX uses `mdbook` to generate the documentation. To install `mdbook` on Ubuntu, run the following commands:
 
 ```sh
 sudo apt install cargo

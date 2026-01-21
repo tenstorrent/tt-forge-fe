@@ -34,7 +34,7 @@ class Wrapper(torch.nn.Module):
         return self.model(inputs)[0]
 
 
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2969")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2969")
 @pytest.mark.nightly
 @pytest.mark.parametrize(
     "variant",

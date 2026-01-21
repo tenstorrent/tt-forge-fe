@@ -56,7 +56,7 @@ def test_mamba(variant):
     if variant in [ModelVariant.MAMBA_2_8B, ModelVariant.MAMBA_1_4B]:
         pytest.xfail(reason="Requires multi-chip support")
     elif variant in [ModelVariant.MAMBA_790M, ModelVariant.MAMBA_370M]:
-        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2586")
+        pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2586")
 
     # Load model and inputs using model loader
     model_loader = ModelLoader(variant)

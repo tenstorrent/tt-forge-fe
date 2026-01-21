@@ -57,7 +57,7 @@ def test_stereo(variant):
     inputs_dict = loader.load_inputs()
     inputs = [inputs_dict["input_ids"], inputs_dict["attention_mask"], inputs_dict["decoder_input_ids"]]
 
-    # Issue: https://github.com/tenstorrent/tt-forge-fe/issues/615
+    # Issue: https://github.com/tenstorrent/tt-forge-onnx/issues/615
     # Forge compile framework model
     compiled_model = forge.compile(framework_model, sample_inputs=inputs, module_name=module_name)
 

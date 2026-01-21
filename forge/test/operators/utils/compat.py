@@ -25,7 +25,7 @@ from .datatypes import FrameworkDataFormat
 
 
 # TODO - Remove this class once TestDevice is available in Forge
-# https://github.com/tenstorrent/tt-forge-fe/issues/342
+# https://github.com/tenstorrent/tt-forge-onnx/issues/342
 class TestDevice:
 
     pass

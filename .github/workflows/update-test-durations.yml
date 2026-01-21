@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          repo="tenstorrent/tt-forge-fe"
+          repo="tenstorrent/tt-forge-onnx"
 
           get_test_results_from_wf() {
             local wf_name="$1"

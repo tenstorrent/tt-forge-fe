@@ -1,12 +1,12 @@
 # Getting Started with Building from Source
 
-This document describes how to build the TT-Forge-FE project on your local machine. You must build from source if you want to develop for TT-Forge-FE. If you only want to run models, please choose one of the following sets of instructions instead:
+This document describes how to build the TT-Forge-ONNX project on your local machine. You must build from source if you want to develop for TT-Forge-ONNX. If you only want to run models, please choose one of the following sets of instructions instead:
 * [Installing a Wheel and Running an Example](getting_started.md) - You should choose this option if you want to run models.
 * [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment.
 
-> **NOTE:** TT-Forge-FE is a framework agnostic frontend  that can convert any model to a generic
+> **NOTE:** TT-Forge-ONNX is a framework agnostic frontend  that can convert any model to a generic
 > Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
-> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
+> Tenstorrent hardware. TT-Forge-ONNX is for use with single-chip systems only.
 
 The topics covered in this document are:
 * [Configuring Your Hardware](#configuring-your-hardware)
@@ -17,7 +17,7 @@ The topics covered in this document are:
 * [Useful Build Environment Variables](#useful-build-environment-variables)
 
 > **NOTE:** If you encounter issues, please request assistance on the
->[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
+>[TT-Forge-ONNX Issues](https://github.com/tenstorrent/tt-forge-onnx/issues) page.
 
 ## Configuring Your Hardware
 If you already configured your hardware, you can skip this section. Otherwise do the following:
@@ -37,7 +37,7 @@ tt-smi
 You should see the Tenstorrent System Management Interface. It allows you to view real-time stats, diagnostics, and health info about your Tenstorrent device.
 
 ## Prerequisites
-The prerequisites for building TT-Forge-FE from souce are:
+The prerequisites for building TT-Forge-ONNX from souce are:
 
 * Clang 17
 * Ninja
@@ -144,7 +144,7 @@ export LD_LIBRARY_PATH=/opt/openmpi-v5.0.7-ulfm/lib:$LD_LIBRARY_PATH
 ```
 
 ## Building the Environment
-This is a one off step to build the toolchain and create a virtual environment for TT-Forge-FE. Generally, you need to run this step only once, unless you want to update the toolchain. Since TT-Forge-FE uses TT-MLIR, this step also builds the TT-MLIR environment (toolchain).
+This is a one off step to build the toolchain and create a virtual environment for TT-Forge-ONNX. Generally, you need to run this step only once, unless you want to update the toolchain. Since TT-Forge-ONNX uses TT-MLIR, this step also builds the TT-MLIR environment (toolchain).
 
 1. First, it's required to create toolchain directories. The proposed example creates directories using the default paths. You can change the paths if you want to use different locations (see the [Useful Build Environment Variables](#useful-build-environment-variables) section below).
 
@@ -158,13 +158,13 @@ sudo mkdir -p /opt/ttmlir-toolchain
 sudo chown -R $USER /opt/ttmlir-toolchain
 ```
 
-2. Clone the TT-Forge-FE repo:
+2. Clone the TT-Forge-ONNX repo:
 
 ```bash
-git clone https://github.com/tenstorrent/tt-forge-fe.git
+git clone https://github.com/tenstorrent/tt-forge-onnx.git
 ```
 
-3. Navigate into the TT-Forge-FE repo.
+3. Navigate into the TT-Forge-ONNX repo.
 
 4. Initialize required env variables:
 
@@ -193,15 +193,15 @@ cmake --build env/build
 > cmake --build env/build
 > ```
 >
-> **NOTE:** Special care should be taken to ensure that the already built TT-MLIR environment (toolchain) version is compatible with the one TT-Forge-FE is using.
+> **NOTE:** Special care should be taken to ensure that the already built TT-MLIR environment (toolchain) version is compatible with the one TT-Forge-ONNX is using.
 
-7. Activate the virtual environment for TT-Forge-FE. (This time when you run the command, you should see a running virtual environment):
+7. Activate the virtual environment for TT-Forge-ONNX. (This time when you run the command, you should see a running virtual environment):
 
 ```bash
 source env/activate
 ```
 
-8. Build the TT-Forge-FE environment:
+8. Build the TT-Forge-ONNX environment:
 
 ```bash
 cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17
@@ -224,7 +224,7 @@ cmake --build build
 > - `-DTTMLIR_RUNTIME_DEBUG=ON|OFF`         - Build runtime debug tools (more logging, debug environment flags)
 
 ### Incremental Building
-If you have made changes to the C++ sources (of the TT-Forge-FE compiler, TT-MLIR or TT-Metal), you might want to do an incremental build to save time. This can be done by running the following command:
+If you have made changes to the C++ sources (of the TT-Forge-ONNX compiler, TT-MLIR or TT-Metal), you might want to do an incremental build to save time. This can be done by running the following command:
 ```bash
 # If you are not already inside the virtual environment, activate it
 source env/activate
@@ -232,7 +232,7 @@ source env/activate
 cmake --build build -- install_ttforge
 ```
 
-This will build TT-Forge-FE C++ sources and the dependencies (TT-MLIR, TT-Metal) and install them in the virtual environment.
+This will build TT-Forge-ONNX C++ sources and the dependencies (TT-MLIR, TT-Metal) and install them in the virtual environment.
 
 ## Building the Docs
 
@@ -256,13 +256,13 @@ mdbook serve build/docs
 
 To ensure a clean build environment, follow these steps to remove existing build artifacts:
 
-1. Remove TT-Forge-FE build artifacts:
+1. Remove TT-Forge-ONNX build artifacts:
     ```bash
     rm -rf build
     ```
-    > **NOTE:** This command removes the `build` directory and all its contents, effectively cleaning up the build artifacts specific to tt-forge-fe.
+    > **NOTE:** This command removes the `build` directory and all its contents, effectively cleaning up the build artifacts specific to tt-forge-onnx.
 
-2. Clean all TT-Forge-FE build artifacts:
+2. Clean all TT-Forge-ONNX build artifacts:
      ```bash
      ./clean_build.sh
      ```

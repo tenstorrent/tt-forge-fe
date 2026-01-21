@@ -24,7 +24,7 @@ python forge/test/benchmark/benchmark.py [options]
 **Example:**
 
 ```bash
-python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-fe-benchmark-e2e-mobilenetv2_basic.json
+python forge/test/benchmark/benchmark.py -m mobilenetv2_basic -ts classification -bs 8 -df bfloat16 -lp 32 -o forge-onnx-benchmark-e2e-mobilenetv2_basic.json
 ```
 
 Alternatively, you can run specific model tests using `pytest`:

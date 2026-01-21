@@ -1,10 +1,10 @@
 ARG FROM_TAG=latest
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci-build
+FROM ghcr.io/tenstorrent/tt-forge-onnx/tt-forge-onnx-base-ubuntu-22-04:${FROM_TAG} AS ci-build
 SHELL ["/bin/bash", "-c"]
 
 # Set environment variables
-ENV PROJECT_NAME=tt-forge-fe
+ENV PROJECT_NAME=tt-forge-onnx
 ENV TTMLIR_TOOLCHAIN_DIR=/opt/ttmlir-toolchain
 ENV TTFORGE_TOOLCHAIN_DIR=/opt/ttforge-toolchain
 ENV TTMLIR_PYTHON_VERSION=python3.11
@@ -30,7 +30,7 @@ RUN source env/activate && \
     cmake -B env/build env && \
     cmake --build env/build
 
-FROM ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-base-ubuntu-22-04:${FROM_TAG} AS ci
+FROM ghcr.io/tenstorrent/tt-forge-onnx/tt-forge-onnx-base-ubuntu-22-04:${FROM_TAG} AS ci
 
 # Copy the TTMLIR_TOOLCHAIN_DIR from the previous stage
 
