@@ -174,7 +174,7 @@ def main():
 
                             testcase = ET.Element("testcase", name=testname, classname=classname, time="0.001")
                             props = ET.SubElement(testcase, "properties")
-                            ET.SubElement(props, "property", name="owner", value="tt-forge-fe")
+                            ET.SubElement(props, "property", name="owner", value="tt-forge-onnx")
                             failure = ET.SubElement(testcase, "failure", message="[crash] Test crashed")
                             failure.text = "Test crashed and was not completed"
                             testsuite.append(testcase)

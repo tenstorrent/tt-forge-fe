@@ -7,7 +7,7 @@
 # Usage:
 #   ./download_artifacts.sh <WORKFLOW_REPO> <RUN_ID> <OUTPUT_DIR> <ARTIFACT_NAME_PREFIX>
 # Example:
-#   ./download_artifacts.sh tenstorrent/tt-forge-fe 123456 artifacts "models-unique-ops-config"
+#   ./download_artifacts.sh tenstorrent/tt-forge-onnx 123456 artifacts "models-unique-ops-config"
 set -euxo pipefail
 
 # Validate positional arguments (exactly 4 required)

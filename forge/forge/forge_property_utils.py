@@ -551,7 +551,7 @@ class Tags:
 @dataclass_json
 @dataclass
 class ForgePropertyStore:
-    owner: str = "tt-forge-fe"
+    owner: str = "tt-forge-onnx"
     group: Optional[str] = None
     priority: Optional[str] = None
     tags: Optional[Tags] = None

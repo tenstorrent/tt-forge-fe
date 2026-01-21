@@ -164,7 +164,7 @@ jobs:
           workflow_search: true
           workflow: on-pr.yml
           name: forge-wheel
-          repo: tenstorrent/tt-forge-fe
+          repo: tenstorrent/tt-forge-onnx
           check_artifacts: true
           search_artifacts: true
 
@@ -173,7 +173,7 @@ jobs:
         run: |
           source env/activate
           pip install tt_tvm*.whl --upgrade
-          pip install tt_forge_fe*.whl --upgrade
+          pip install tt_forge_onnx*.whl --upgrade
 
       - name: Download Generated Models Ops Tests
         if: ${{ inputs.run_models_ops_tests }}
@@ -318,7 +318,7 @@ jobs:
         if: success() || failure()
         with:
           report_paths: ${{ steps.strings.outputs.test_report_path }}
-          check_name: TT-Forge-FE Tests
+          check_name: TT-Forge-ONNX Tests
           comment: false
           updateComment: false
           detailed_summary: true

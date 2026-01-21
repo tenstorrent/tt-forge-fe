@@ -11,7 +11,7 @@ from forge.verify.verify import verify
 
 
 @pytest.mark.xfail(
-    reason="RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vkovinic/tt-forge-fe/forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size()) "
+    reason="RuntimeError: TT_ASSERT @ /proj_sw/user_dev/vkovinic/tt-forge-onnx/forge/csrc/graph_lib/shape.cpp:135: (i >= 0) && (i < (int)dims_.size()) "
     + "info: "
     + "Trying to access element outside of dimensions: -1"
 )

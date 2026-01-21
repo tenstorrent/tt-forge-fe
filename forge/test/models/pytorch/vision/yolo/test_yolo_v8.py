@@ -24,7 +24,7 @@ from test.models.pytorch.vision.yolo.model_utils.yolo_utils import YoloWrapper
 
 variants = [
     pytest.param(
-        ModelVariant.YOLOV8X, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2929")
+        ModelVariant.YOLOV8X, marks=pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2929")
     ),
     ModelVariant.YOLOV8N,
 ]

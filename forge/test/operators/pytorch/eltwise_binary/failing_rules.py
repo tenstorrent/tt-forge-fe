@@ -32,7 +32,7 @@ class FailingRulesData:
     )
 
     add = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
         # TestCollection(
@@ -46,7 +46,7 @@ class FailingRulesData:
     ]
 
     sub = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
         # TestCollection(
@@ -60,7 +60,7 @@ class FailingRulesData:
     ]
 
     mul = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
         # TestCollection(
@@ -84,7 +84,7 @@ class FailingRulesData:
     ]
 
     div = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Tensor a contains NaN/Inf values
         # TestCollection(
@@ -103,7 +103,7 @@ class FailingRulesData:
         #     ],
         #     failing_reason=FailingReasons.DATA_MISMATCH,
         # ),
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Input tensors must have the same data type, but got {} and {}
         # TestCollection(
@@ -150,7 +150,7 @@ class FailingRulesData:
     ]
 
     maximum = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
         # TestCollection(
@@ -173,7 +173,7 @@ class FailingRulesData:
     ]
 
     minimum = [
-        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-fe/forge/csrc/verif/verif_ops.cpp
+        # # RuntimeError: TT_ASSERT @ /home/vobojevic/src/ttforge/tt-forge-onnx/forge/csrc/verif/verif_ops.cpp
         # # info:
         # # Unsupported data type for tensor a: {}
         # TestCollection(

@@ -35,7 +35,7 @@ def test_vgg19_unet():
         group=ModelGroup.RED,
         priority=ModelPriority.P1,
     )
-    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2888")
+    pytest.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2888")
 
     # Load model and input
     loader = ModelLoader()

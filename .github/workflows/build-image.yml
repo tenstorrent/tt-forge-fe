@@ -36,7 +36,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: 'tenstorrent/tt-forge-fe'
+          repository: 'tenstorrent/tt-forge-onnx'
           submodules: recursive
           fetch-depth: 0 # Fetch all history and tags
 
@@ -96,6 +96,6 @@ jobs:
         run: |
           DOCKER_CI_IMAGE=${{ needs.build-image.outputs.docker-image }}
           DOCKER_TAG=$(echo $DOCKER_CI_IMAGE | sed 's/^.*://')
-          IMAGE_NAME=ghcr.io/tenstorrent/tt-forge-fe/tt-forge-fe-ird-ubuntu-22-04
+          IMAGE_NAME=ghcr.io/tenstorrent/tt-forge-onnx/tt-forge-onnx-ird-ubuntu-22-04
           echo "Setting latest tag on the image $IMAGE_NAME:$DOCKER_TAG"
           skopeo copy "docker://$IMAGE_NAME:$DOCKER_TAG" "docker://$IMAGE_NAME:latest"

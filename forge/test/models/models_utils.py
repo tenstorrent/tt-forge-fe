@@ -287,10 +287,9 @@ def _prepare_4d_causal_attention_mask_with_cache_position(
     return causal_mask
 
 
-import surya.common.surya.processor as _surya_processor_module
-
-
 def _process_image_input(self, image_input):
+    import surya.common.surya.processor as _surya_processor_module
+
     rotated = image_input.get("rotated", False)
     image = image_input.get("image", None)
     assert image is not None, "A PIL Image must be provided when the input type is `image`"

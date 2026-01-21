@@ -1,9 +1,9 @@
 # Getting Started
-This document walks you through how to set up TT-Forge-FE. This is the main Getting Started page. There are two additional Getting Started pages depending on what you want to do. They are all described here, with links provided to each.
+This document walks you through how to set up TT-Forge-ONNX. This is the main Getting Started page. There are two additional Getting Started pages depending on what you want to do. They are all described here, with links provided to each.
 
-> **NOTE:** TT-Forge-FE is a framework agnostic frontend  that can convert any model to a generic
+> **NOTE:** TT-Forge-ONNX is a framework agnostic frontend  that can convert any model to a generic
 > Intermediate Representation (IR) that can then be converted to a Tenstorrent specific IR for use with
-> Tenstorrent hardware. TT-Forge-FE is for use with single-chip systems only.
+> Tenstorrent hardware. TT-Forge-ONNX is for use with single-chip systems only.
 
 The following topics are covered:
 
@@ -16,13 +16,13 @@ The following topics are covered:
 * [Where to Go Next](#where-to-go-next)
 
 > **NOTE:** If you encounter issues, please request assistance on the
->[TT-Forge-FE Issues](https://github.com/tenstorrent/tt-forge-fe/issues) page.
+>[TT-Forge-ONNX Issues](https://github.com/tenstorrent/tt-forge-onnx/issues) page.
 
 ## Setup Options
-TT-Forge-FE can be used to run models from any framework. Because TT-Forge-FE is open source, you can also develop and add features to it. Setup instructions differ based on the task. You have the following options, listed in order of difficulty:
+TT-Forge-ONNX can be used to run models from any framework. Because TT-Forge-ONNX is open source, you can also develop and add features to it. Setup instructions differ based on the task. You have the following options, listed in order of difficulty:
 * [Installing a Wheel and Running an Example](#installing-a-wheel-and-running-an-example) - You should choose this option if you want to run models.
 * [Using a Docker Container to Run an Example](getting_started_docker.md) - Choose this option if you want to keep the environment for running models separate from your existing environment.
-* [Building from Source](getting_started_build_from_source.md) - This option is best if you want to develop TT-Forge-FE further. It's a more complex process you are unlikely to need if you want to stick with running a model.
+* [Building from Source](getting_started_build_from_source.md) - This option is best if you want to develop TT-Forge-ONNX further. It's a more complex process you are unlikely to need if you want to stick with running a model.
 
 ## Configuring Hardware
 Before setup can happen, you must configure your hardware. You can skip this section if you already completed the configuration steps. Otherwise, this section of the walkthrough shows you how to do a quick setup using TT-Installer.
@@ -56,7 +56,7 @@ This section walks you through downloading and installing a wheel. You can insta
 
 1. Make sure you are in an active virtual environment. This walkthrough uses the same environment you activated to look at TT-SMI in the [Configuring Hardware](#configuring-hardware) section.
 
-2. For this walkthrough, TT-Forge-FE is used. You need to install the **tt_forge** wheel:
+2. For this walkthrough, TT-Forge-ONNX is used. You need to install the **tt_forge** wheel:
 
 ```bash
 pip install tt_forge --extra-index-url https://pypi.eng.aws.tenstorrent.com/
@@ -93,14 +93,14 @@ out = compiled_model(a, b)
 print("compiled output:", out)
 ```
 
-5. You have now set up the latest wheel for TT-Forge-FE, and can run any models you want inside your virtual environment.
+5. You have now set up the latest wheel for TT-Forge-ONNX, and can run any models you want inside your virtual environment.
 
 ## Other Set up Options
-If you want to keep your environment completely separate in a Docker container, or you want to develop TT-Forge-FE further, this section links you to the pages with those options:
+If you want to keep your environment completely separate in a Docker container, or you want to develop TT-Forge-ONNX further, this section links you to the pages with those options:
 
 * [Setting up a Docker Container](getting_started_docker.md) - keep everything for running models in a container
-* [Building from Source](getting_started_build_from_source.md) - set up so you can develop TT-Forge-FE
+* [Building from Source](getting_started_build_from_source.md) - set up so you can develop TT-Forge-ONNX
 
 ## Where to Go Next
 
-Now that you have set up TT-Forge-FE, you can compile and run other demos or your own code. See the [TT-Forge-FE folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-fe) for more demo options.
+Now that you have set up TT-Forge-ONNX, you can compile and run other demos or your own code. See the [TT-Forge-ONNX folder in the TT-Forge repo](https://github.com/tenstorrent/tt-forge/tree/main/demos/tt-forge-onnx) for more demo options.

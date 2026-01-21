@@ -468,7 +468,7 @@ def pytest_generate_tests(metafunc):
 
     if "test_device" in metafunc.fixturenames:
         # Temporary work arround to provide dummy test_device
-        # TODO remove workarround https://github.com/tenstorrent/tt-forge-fe/issues/342
+        # TODO remove workarround https://github.com/tenstorrent/tt-forge-onnx/issues/342
         metafunc.parametrize("test_device", (None,), ids=["no_device"])
 
     if "_test_device_not_implemented" in metafunc.fixturenames:

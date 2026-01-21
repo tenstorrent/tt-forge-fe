@@ -83,7 +83,7 @@ jobs:
 
     - uses: actions/checkout@v4
       with:
-        repository: 'tenstorrent/tt-forge-fe'
+        repository: 'tenstorrent/tt-forge-onnx'
         submodules: recursive
         clean: true
         fetch-depth: 0 # Fetch all history and tags
@@ -116,7 +116,7 @@ jobs:
         create-symlink: true
         key: forge-build-${{ matrix.build.build-type }}
 
-    - name: Build (creates tvm and tt-forge-fe wheels)
+    - name: Build (creates tvm and tt-forge-onnx wheels)
       shell: bash
       run: |
         source env/activate
@@ -126,14 +126,14 @@ jobs:
         cd ../../..
         cp third_party/tvm/python/dist/*.whl dist/
 
-    - name: Validate build type of wheel build of tt-forge-fe wheel
+    - name: Validate build type of wheel build of tt-forge-onnx wheel
       shell: bash
       run: |
           source env/activate
           #Inspect the wheel build type on wheel file without installing the wheel
           pip install wheel-inspect
           # Expand the glob pattern to get the actual wheel filename
-          WHEEL_FILE=$(ls dist/tt_forge_fe*.whl)
+          WHEEL_FILE=$(ls dist/tt_forge_onnx*.whl)
           echo "Found wheel: $WHEEL_FILE"
           wheel_summary=$(wheel2json "$WHEEL_FILE" | jq -r '.dist_info.metadata.summary')
           # Lowercase the build type
@@ -195,7 +195,7 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          repository: 'tenstorrent/tt-forge-fe'
+          repository: 'tenstorrent/tt-forge-onnx'
           submodules: recursive
           clean: true
           fetch-depth: 0 # Fetch all history and tags
@@ -261,8 +261,8 @@ jobs:
       - name: Prepare code coverage report
         run: |
           lcov --directory build --capture --output-file coverage.info --gcov-tool ${{ steps.strings.outputs.work-dir }}/.github/workflows/gcov_for_clang.sh
-          lcov --extract coverage.info '**/tt-forge-fe/forge/csrc/*' --output-file coverage.info
-          sed -i 's|SF:/__w/tt-forge-fe/tt-forge-fe/forge/csrc/|SF:csrc/|' coverage.info
+          lcov --extract coverage.info '**/tt-forge-onnx/forge/csrc/*' --output-file coverage.info
+          sed -i 's|SF:/__w/tt-forge-onnx/tt-forge-onnx/forge/csrc/|SF:csrc/|' coverage.info
           lcov --list coverage.info
 
       - name: Upload coverage reports to Codecov

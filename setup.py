@@ -97,6 +97,17 @@ class CMakeBuild(build_ext):
         self.spawn(["cmake", "--build", str(build_dir)])
         self.spawn(["cmake", "--install", str(build_dir)])
 
+        _remove_broken_symlinks(install_dir)
+
+
+def _remove_broken_symlinks(root: Path) -> None:
+    """Remove broken symlinks that would cause wheel packaging to fail."""
+    for path in root.rglob("*"):
+        if path.is_symlink() and not path.exists():
+            rel = path.relative_to(root)
+            print(f"Removing broken symlink: {rel}")
+            path.unlink()
+
 
 with open("README.md", "r") as f:
     long_description = f.read()
@@ -251,7 +262,7 @@ def get_git_commit_hash(repo_path: str = ".") -> str:
 def get_tt_mlir_commit_hash() -> str:
     """
     Get tt-mlir SHA from the git submodule.
-    In tt-forge-fe, tt-mlir is a git submodule, so we get the commit hash directly.
+    In tt-forge-onnx, tt-mlir is a git submodule, so we get the commit hash directly.
     """
     mlir_path = "third_party/tt-mlir"
     if not os.path.exists(mlir_path):
@@ -319,7 +330,7 @@ packages = [p for p in find_packages("forge") if not p.startswith("test")]
 
 
 setup(
-    name="tt_forge_fe",
+    name="tt_forge_onnx",
     version=version,
     description=build_summary,
     install_requires=requirements,

@@ -55,7 +55,7 @@ def reduce_loss(reduction, loss):
     op = reduction_op[reduction]
     dims = loss.ndim()
     # hack for 1D tensors described in issue
-    # https://github.com/tenstorrent/tt-forge-fe/issues/907
+    # https://github.com/tenstorrent/tt-forge-onnx/issues/907
     for i in range(-1, -1 - dims, -1):
         loss = op(f"reduce_loss_{reduction}_dim_{i}", loss, i)
     return loss

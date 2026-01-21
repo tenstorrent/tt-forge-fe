@@ -4,5 +4,5 @@
 # This file contains commits that are not important for blaming. You can set this file as a default git-blame ignore file with:
 # git config blame.ignoreRevsFile .git-blame-ignore-revs
 
-# format everything #405 (https://github.com/tenstorrent/tt-forge-fe/pull/405)
+# format everything #405 (https://github.com/tenstorrent/tt-forge-onnx/pull/405)
 5e3f03c0c1f445e12e42f1612f655e7c4c57d3bc

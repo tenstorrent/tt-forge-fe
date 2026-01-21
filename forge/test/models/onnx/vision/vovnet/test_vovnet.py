@@ -148,7 +148,7 @@ def generate_model_vovnet_imgcls_timm_pytorch(variant):
     return model, [image_tensor], {}
 
 
-@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2974")
+@pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2974")
 @pytest.mark.nightly
 @pytest.mark.parametrize("variant", ["ese_vovnet19b_dw.ra_in1k"])
 def test_vovnet_timm_onnx(variant, forge_tmp_path):

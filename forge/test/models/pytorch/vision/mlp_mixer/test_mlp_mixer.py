@@ -20,32 +20,32 @@ from forge.verify.verify import verify
 variants = [
     pytest.param(
         ModelVariant.MIXER_B16_224,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
     pytest.param(
         ModelVariant.MIXER_B16_224_IN21K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
     pytest.param(ModelVariant.MIXER_B16_224_MIIL),
     pytest.param(
         ModelVariant.MIXER_B16_224_MIIL_IN21K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
     pytest.param(ModelVariant.MIXER_B32_224),
     pytest.param(
         ModelVariant.MIXER_L16_224,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
     pytest.param(
         ModelVariant.MIXER_L16_224_IN21K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
     pytest.param(ModelVariant.MIXER_L32_224),
     pytest.param(ModelVariant.MIXER_S16_224),
     pytest.param(ModelVariant.MIXER_S32_224),
     pytest.param(
         ModelVariant.MIXER_B16_224_GOOG_IN21K,
-        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-fe/issues/2599")],
+        marks=[pytest.mark.xfail(reason="https://github.com/tenstorrent/tt-forge-onnx/issues/2599")],
     ),
 ]
 
