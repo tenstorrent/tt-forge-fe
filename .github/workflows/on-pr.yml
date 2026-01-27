@@ -71,7 +71,7 @@ jobs:
           echo "test_group_cnt=$test_group_cnt" >> $GITHUB_OUTPUT
           echo "test_group_ids=$test_group_ids" >> $GITHUB_OUTPUT
           echo "enable_verbose=$enable_verbose" >> $GITHUB_OUTPUT
-          
+
   spdx:
     uses: ./.github/workflows/spdx.yml
     secrets: inherit
