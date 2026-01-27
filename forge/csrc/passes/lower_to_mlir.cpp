@@ -22,6 +22,7 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
 #include "mlir/IR/Attributes.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/Value.h"
@@ -227,24 +228,31 @@ class MLIRGenerator
         }
 
         log_info(LogMLIRCompiler, "MLIR module generated successfully.");
-        graphModule_.dump();
+
+        // Dump TTIR module only at trace log level
+        std::string moduleStr;
+        llvm::raw_string_ostream rso(moduleStr);
+        graphModule_.print(rso);
+        rso.flush();
+        log_trace(LogMLIRCompiler, "TTIR module after lowering ForgeGraphModule:\n{}", moduleStr);
 
         // save what's dumped to a file named "{file_name}.mlir"
         reportify::dump_mlir("ttir", graphModule_.getNameAttr().getValue().str(), graphModule_.getOperation());
 
 #ifdef DEBUG
-        // Create a string to store the output
-        std::string moduleStr;
-        llvm::raw_string_ostream rso(moduleStr);
+        // Create a string to store the output with debug info
+        std::string moduleStrDebug;
+        llvm::raw_string_ostream rsoDebug(moduleStrDebug);
 
-        // Print the MLIR module
+        // Print the MLIR module with debug info
         mlir::OpPrintingFlags printFlags;
         printFlags.enableDebugInfo();
-        graphModule_.print(rso, printFlags);
+        graphModule_.print(rsoDebug, printFlags);
 
-        rso.flush();
+        rsoDebug.flush();
 
-        log_trace(LogMLIRCompiler, "MLIR module after lowering ForgeGraphModule:\n{}", moduleStr);
+        log_trace(
+            LogMLIRCompiler, "TTIR module after lowering ForgeGraphModule (with debug info):\n{}", moduleStrDebug);
 #endif
 
         return graphModule_;

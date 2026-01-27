@@ -12,6 +12,7 @@
 #include <string>
 
 #include "graph_lib/defines.hpp"
+#include "llvm/Support/raw_ostream.h"
 #include "lower_to_mlir.hpp"
 #include "mlir_passes.hpp"
 #include "shared_utils/json_extension.hpp"
@@ -98,7 +99,12 @@ auto run_mlir_compiler_generic(tt::ForgeGraphModule& module, const std::optional
 
     tt::log_info(LogMLIRCompiler, "MLIR passes run successfully.");
 
-    mlir_module->dump();
+    // Dump TTNN module only at trace log level
+    std::string moduleStr;
+    llvm::raw_string_ostream rso(moduleStr);
+    mlir_module->print(rso);
+    rso.flush();
+    log_trace(LogMLIRCompiler, "TTNN module after running mlir passes:\n{}", moduleStr);
 
     if constexpr (output == MLIROutputKind::Flatbuffer)
     {
