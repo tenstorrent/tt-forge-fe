@@ -32,7 +32,7 @@ from forge.transpiler.frontends.onnx.converters.unsqueeze import UnsqueezeConver
 from forge.transpiler.frontends.onnx.converters.concat import ConcatConverter
 from forge.transpiler.frontends.onnx.converters.clip import ClipConverter
 from forge.transpiler.frontends.onnx.converters.conv import ConvConverter
-from forge.transpiler.frontends.onnx.converters.arithmetic import BinaryArithmeticConverter
+from forge.transpiler.frontends.onnx.converters.arithmetic import BinaryArithmeticConverter, MatMulConverter
 from forge.transpiler.frontends.onnx.converters.gemm import GemmConverter
 from forge.transpiler.frontends.onnx.converters.activation import (
     ReluConverter,
@@ -42,15 +42,21 @@ from forge.transpiler.frontends.onnx.converters.activation import (
     LogSoftmaxConverter,
     LeakyReluConverter,
     DropoutConverter,
+    SqrtConverter,
 )
 from forge.transpiler.frontends.onnx.converters.reduction import (
     ReduceSumConverter,
     ReduceMeanConverter,
     ReduceMaxConverter,
 )
-from forge.transpiler.frontends.onnx.converters.pooling import MaxPoolConverter, AveragePoolConverter
+from forge.transpiler.frontends.onnx.converters.pooling import (
+    MaxPoolConverter,
+    AveragePoolConverter,
+    GlobalAveragePoolConverter,
+)
 from forge.transpiler.frontends.onnx.converters.shape import TransposeConverter, CastConverter, FlattenConverter
 from forge.transpiler.frontends.onnx.converters.constant import ConstantConverter
+from forge.transpiler.frontends.onnx.converters.condition import WhereConverter
 from forge.transpiler.frontends.onnx.converters.converter_result import ConverterResult, is_constant_result
 from forge.transpiler.frontends.onnx.utils.naming import sanitize_name, ensure_unique_name
 from forge.transpiler.frontends.onnx.utils.exceptions import UnsupportedOperationError, ONNXModelValidationError
@@ -493,11 +499,13 @@ class ONNXToForgeTranspiler:
             "Sub": BinaryArithmeticConverter.get_converter(opset),
             "Mul": BinaryArithmeticConverter.get_converter(opset),
             "Div": BinaryArithmeticConverter.get_converter(opset),
+            "MatMul": MatMulConverter.get_converter(opset),
             "Gemm": GemmConverter.get_converter(opset),
             # Activation operations
             "Relu": ReluConverter.get_converter(opset),
             "Sigmoid": SigmoidConverter.get_converter(opset),
             "Tanh": TanhConverter.get_converter(opset),
+            "Sqrt": SqrtConverter.get_converter(opset),
             "Softmax": SoftmaxConverter.get_converter(opset),
             "LogSoftmax": LogSoftmaxConverter.get_converter(opset),
             "LeakyRelu": LeakyReluConverter.get_converter(opset),
@@ -509,6 +517,7 @@ class ONNXToForgeTranspiler:
             # Pooling operations
             "MaxPool": MaxPoolConverter.get_converter(opset),
             "AveragePool": AveragePoolConverter.get_converter(opset),
+            "GlobalAveragePool": GlobalAveragePoolConverter.get_converter(opset),
             # Shape operations
             "Transpose": TransposeConverter.get_converter(opset),
             "Cast": CastConverter.get_converter(opset),
@@ -522,6 +531,8 @@ class ONNXToForgeTranspiler:
             "Clip": ClipConverter.get_converter(opset),
             "Conv": ConvConverter.get_converter(opset),
             "Constant": ConstantConverter.get_converter(opset),
+            # Conditional operations
+            "Where": WhereConverter.get_converter(opset),
         }
 
         return convert_map

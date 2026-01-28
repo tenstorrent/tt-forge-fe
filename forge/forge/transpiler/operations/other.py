@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 """
-Other operations: Concat, Clip, Cast, Pad, Identity
+Other operations: Concat, Clip, Cast, Pad, Identity, Where
 """
 import torch
 import torch.nn.functional as F
@@ -329,3 +329,53 @@ class FullNode(TIRNode):
 
         result = torch.full(shape, fill_value, dtype=dtype)
         return {self.output_names[0]: result}
+
+
+class WhereNode(TIRNode):
+    """
+    Conditional selection operation node.
+
+    Performs element-wise conditional selection: output = condition ? X : Y
+    Supports broadcasting for all three inputs (condition, X, Y).
+    Maps to PyTorch's torch.where operation.
+    """
+
+    @staticmethod
+    def create(name: str, inputs: OrderedDict[str, TensorInfo], outputs: OrderedDict[str, TensorInfo]) -> "WhereNode":
+        """
+        Static factory method to create a WhereNode.
+
+        Args:
+            name: Node name
+            inputs: OrderedDict mapping input names to TensorInfo (condition, X, Y)
+            outputs: OrderedDict mapping output names to TensorInfo
+
+        Returns:
+            WhereNode instance
+        """
+        return WhereNode(name=name, op_type="Where", inputs=inputs, outputs=outputs, attrs={}, forge_op_name="Where")
+
+    def eval(self, input_tensors: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """
+        Evaluate conditional selection operation using PyTorch.
+
+        Performs element-wise conditional selection with broadcasting support.
+        For each element position:
+        - If condition[i] is True (nonzero), output[i] = X[i]
+        - If condition[i] is False (zero), output[i] = Y[i]
+
+        Args:
+            input_tensors: Dictionary mapping input names to tensors
+                Expected keys: condition (bool), X (T), Y (T)
+
+        Returns:
+            Dictionary mapping output name to result tensor
+
+        Note:
+            PyTorch's torch.where handles broadcasting automatically.
+            X and Y must have the same dtype.
+        """
+        condition = input_tensors[self.input_names[0]]
+        x = input_tensors[self.input_names[1]]
+        y = input_tensors[self.input_names[2]]
+        return {self.output_names[0]: torch.where(condition, x, y)}

@@ -22,6 +22,10 @@ from forge.transpiler.core.types import TensorInfo
 from forge.transpiler.operations.arithmetic import AddNode, SubNode, MulNode, DivNode, MatMulNode
 from forge.transpiler.frontends.onnx.converters.base import OnnxOpConverter
 from forge.transpiler.frontends.onnx.utils.io_builder import build_input_output_dicts
+from forge.transpiler.frontends.onnx.utils.broadcasting import (
+    are_shapes_compatible_for_broadcasting,
+    compute_broadcasted_shape,
+)
 
 
 def _are_shapes_equal(shape_a: Tuple, shape_b: Tuple) -> bool:
@@ -36,47 +40,6 @@ def _are_shapes_equal(shape_a: Tuple, shape_b: Tuple) -> bool:
         True if shapes are identical, False otherwise
     """
     return shape_a == shape_b
-
-
-def _are_shapes_compatible_for_broadcasting(shape_a: Tuple, shape_b: Tuple) -> bool:
-    """
-    Check if two shapes are compatible for NumPy-style broadcasting (OPSET 7+).
-
-    Two shapes are compatible for multidirectional broadcasting if:
-    - They are equal, OR
-    - For each dimension (aligned from right), they are equal OR one is 1 OR one is missing
-
-    This implements PyTorch/NumPy-style broadcasting where dimensions are aligned
-    from the right, and missing dimensions are treated as 1.
-
-    Args:
-        shape_a: First shape tuple
-        shape_b: Second shape tuple
-
-    Returns:
-        True if shapes are compatible for broadcasting, False otherwise
-    """
-    if shape_a == shape_b:
-        return True
-
-    # Align shapes from the right (broadcasting aligns trailing dimensions)
-    len_a, len_b = len(shape_a), len(shape_b)
-    max_len = max(len_a, len_b)
-
-    # Check compatibility dimension by dimension, starting from the right
-    for i in range(max_len):
-        # Get dimensions from right to left (trailing dimensions first)
-        dim_a = shape_a[-(i + 1)] if i < len_a else 1
-        dim_b = shape_b[-(i + 1)] if i < len_b else 1
-
-        # Dimensions are compatible if:
-        # - They are equal, OR
-        # - One of them is 1 (can be broadcast)
-        # Missing dimensions (when one shape is shorter) are treated as 1
-        if dim_a != dim_b and dim_a != 1 and dim_b != 1:
-            return False
-
-    return True
 
 
 def _validate_limited_broadcasting(shape_a: Tuple, shape_b: Tuple, axis: Optional[int], op_type: str) -> None:
@@ -194,7 +157,7 @@ def _validate_broadcast_attributes(
         return  # Skip validation if shapes are unknown
 
     shapes_match = _are_shapes_equal(shape_a, shape_b)
-    shapes_compatible_multidir = _are_shapes_compatible_for_broadcasting(shape_a, shape_b)
+    shapes_compatible_multidir = are_shapes_compatible_for_broadcasting(shape_a, shape_b)
 
     # Handle broadcasting validation based on opset version
     if opset <= 6:
@@ -303,6 +266,21 @@ class BinaryArithmeticConverter(OnnxOpConverter):
         # Generate node name if not provided
         node_name = node_proto.name if node_proto.name else f"{op_type}_{node_index}"
 
+        # Compute output shape if not already set (for opset 7+ with multidirectional broadcasting)
+        if opset >= 7 and len(input_tensors) >= 2:
+            input_names = list(input_tensors.keys())
+            tensor_a = input_tensors[input_names[0]]
+            tensor_b = input_tensors[input_names[1]]
+
+            output_shape = compute_broadcasted_shape(tensor_a.shape, tensor_b.shape)
+            if output_shape is not None and len(output_tensors) > 0:
+                output_name = list(output_tensors.keys())[0]
+                output_tensors[output_name] = TensorInfo(
+                    name=output_name,
+                    shape=output_shape,
+                    onnx_dtype=tensor_a.onnx_dtype,  # Output dtype matches input dtypes (validated to match)
+                )
+
         # Build OrderedDict for inputs and outputs
         input_dict, output_dict = build_input_output_dicts(node_proto, input_tensors, output_tensors)
 
@@ -310,3 +288,238 @@ class BinaryArithmeticConverter(OnnxOpConverter):
         # The node will use PyTorch operations (torch.add, torch.sub, etc.)
         # which handle broadcasting automatically
         return [node_class.create(name=node_name, inputs=input_dict, outputs=output_dict)]
+
+
+def _validate_matmul_shapes(
+    node_name: str, shape_a: Optional[Tuple], shape_b: Optional[Tuple], opset: int
+) -> Tuple[Optional[Tuple], Optional[Tuple], Optional[Tuple]]:
+    """
+    Validate shapes for MatMul operation and compute output shape.
+
+    MatMul performs matrix multiplication: Y = A @ B
+    - For 2D: A [M, K] @ B [K, N] -> Y [M, N]
+    - For N-dimensional: A [..., M, K] @ B [..., K, N] -> Y [..., M, N]
+    - Batch dimensions are broadcastable
+
+    Args:
+        node_name: Name of the MatMul node (for error messages)
+        shape_a: Shape of input tensor A
+        shape_b: Shape of input tensor B
+        opset: ONNX opset version
+
+    Returns:
+        Tuple of (shape_a, shape_b, output_shape) after validation
+
+    Raises:
+        ValueError: If shapes are incompatible for matrix multiplication
+    """
+    if shape_a is None or shape_b is None:
+        logger.warning(
+            f"MatMul node {node_name}: Cannot fully validate shapes - "
+            f"one or both shapes are unknown. Shape A: {shape_a}, Shape B: {shape_b}"
+        )
+        return shape_a, shape_b, None
+
+    # Validate minimum dimensions
+    if len(shape_a) < 1:
+        raise ValueError(f"MatMul node {node_name}: Input A must have at least 1 dimension, got shape {shape_a}")
+    if len(shape_b) < 1:
+        raise ValueError(f"MatMul node {node_name}: Input B must have at least 1 dimension, got shape {shape_b}")
+
+    # Handle 1D inputs: treat as 2D with leading dimension 1
+    # ONNX MatMul requires at least 2D, but PyTorch matmul handles 1D
+    # We'll validate as if they're 2D for consistency with ONNX spec
+    if len(shape_a) == 1:
+        # 1D A: [K] -> treat as [1, K] for validation
+        shape_a_2d = (1,) + shape_a
+        logger.debug(f"MatMul node {node_name}: Treating 1D input A {shape_a} as 2D {shape_a_2d}")
+    else:
+        shape_a_2d = shape_a
+
+    if len(shape_b) == 1:
+        # 1D B: [K] -> treat as [K, 1] for validation
+        shape_b_2d = shape_b + (1,)
+        logger.debug(f"MatMul node {node_name}: Treating 1D input B {shape_b} as 2D {shape_b_2d}")
+    else:
+        shape_b_2d = shape_b
+
+    # Now both shapes are at least 2D
+    # Validate matrix multiplication compatibility: A.shape[-1] == B.shape[-2]
+    if shape_a_2d[-1] != shape_b_2d[-2]:
+        raise ValueError(
+            f"MatMul node {node_name}: Incompatible shapes for matrix multiplication. "
+            f"A.shape[-1] ({shape_a_2d[-1]}) must equal B.shape[-2] ({shape_b_2d[-2]}). "
+            f"A shape: {shape_a} (treated as {shape_a_2d}), B shape: {shape_b} (treated as {shape_b_2d})"
+        )
+
+    # Determine if this is batched (N-dimensional) or standard (2D) matrix multiplication
+    is_batched = len(shape_a_2d) > 2 or len(shape_b_2d) > 2
+
+    if is_batched:
+        # N-dimensional case: validate batch dimensions are broadcastable
+        batch_dims_a = shape_a_2d[:-2]
+        batch_dims_b = shape_b_2d[:-2]
+
+        # Compute broadcasted batch dimensions
+        # Align from right and compute broadcasted shape
+        max_batch_len = max(len(batch_dims_a), len(batch_dims_b))
+        broadcasted_batch_dims = []
+
+        for i in range(max_batch_len):
+            # Get dimensions from right to left
+            idx_a = len(batch_dims_a) - max_batch_len + i if i < len(batch_dims_a) else None
+            idx_b = len(batch_dims_b) - max_batch_len + i if i < len(batch_dims_b) else None
+
+            dim_a = batch_dims_a[idx_a] if idx_a is not None and idx_a >= 0 else 1
+            dim_b = batch_dims_b[idx_b] if idx_b is not None and idx_b >= 0 else 1
+
+            # Broadcasted dimension is max of the two (or 1 if one is missing)
+            if dim_a == dim_b:
+                broadcasted_batch_dims.append(dim_a)
+            elif dim_a == 1:
+                broadcasted_batch_dims.append(dim_b)
+            elif dim_b == 1:
+                broadcasted_batch_dims.append(dim_a)
+            else:
+                # This should have been caught by broadcasting check, but validate anyway
+                raise ValueError(
+                    f"MatMul node {node_name}: Batch dimensions are not broadcastable. "
+                    f"A batch dims: {batch_dims_a}, B batch dims: {batch_dims_b}. "
+                    f"At position {i}: {dim_a} vs {dim_b} (both must be equal or one must be 1)"
+                )
+
+        # Validate batch dimensions are compatible for broadcasting
+        if not are_shapes_compatible_for_broadcasting(batch_dims_a, batch_dims_b):
+            raise ValueError(
+                f"MatMul node {node_name}: Batch dimensions are not broadcastable. "
+                f"A batch dims: {batch_dims_a}, B batch dims: {batch_dims_b}. "
+                f"Batch dimensions must be compatible for NumPy/PyTorch-style broadcasting "
+                f"(aligned from right, compatible if equal or one is 1)"
+            )
+
+        # Compute output shape: [broadcasted_batch_dims..., M, N]
+        # M = A.shape[-2], N = B.shape[-1]
+        M = shape_a_2d[-2]
+        N = shape_b_2d[-1]
+        output_shape = tuple(broadcasted_batch_dims) + (M, N)
+
+        logger.debug(
+            f"MatMul node {node_name}: Batched matrix multiplication. "
+            f"A: {shape_a} -> {shape_a_2d}, B: {shape_b} -> {shape_b_2d}, "
+            f"Batch dims: {batch_dims_a} x {batch_dims_b} -> {broadcasted_batch_dims}, "
+            f"Output: {output_shape}"
+        )
+    else:
+        # Standard 2D matrix multiplication
+        M = shape_a_2d[-2]
+        N = shape_b_2d[-1]
+        output_shape = (M, N)
+
+        logger.debug(
+            f"MatMul node {node_name}: Standard 2D matrix multiplication. "
+            f"A: {shape_a} -> {shape_a_2d} [M={M}, K={shape_a_2d[-1]}], "
+            f"B: {shape_b} -> {shape_b_2d} [K={shape_b_2d[-2]}, N={N}], "
+            f"Output: {output_shape} [M={M}, N={N}]"
+        )
+
+    return shape_a, shape_b, output_shape
+
+
+class MatMulConverter(OnnxOpConverter):
+    """
+    Converter for ONNX MatMul (Matrix Multiplication) operation.
+
+    MatMul performs matrix product that behaves like numpy.matmul.
+    It computes Y = A @ B where A and B are N-dimensional matrices,
+    with the last two dimensions being treated as matrices and all
+    preceding dimensions as batch dimensions.
+
+    Key features:
+    - No attributes: MatMul has no configurable attributes
+    - Standard 2D: Handles standard matrix multiplication [M, K] @ [K, N] -> [M, N]
+    - N-dimensional: Handles batched matrix multiplication [..., M, K] @ [..., K, N] -> [..., M, N]
+    - Broadcasting: Automatically handles broadcasting for batch dimensions
+    - Shape validation: Comprehensive validation of matrix dimensions and batch broadcasting
+    - All opset versions: Behavior is consistent across all opset versions (1, 9, 13)
+    """
+
+    @classmethod
+    def convert(
+        cls,
+        node_proto: NodeProto,
+        input_tensors: OrderedDict[str, TensorInfo],
+        output_tensors: OrderedDict[str, TensorInfo],
+        attrs: Dict[str, Any],
+        node_index: int,
+        graph_proto=None,
+        opset: int = 1,
+    ) -> List:
+        """
+        Convert ONNX MatMul operation to MatMulNode.
+
+        Supports both standard 2D matrix multiplication and N-dimensional batched
+        matrix multiplication with automatic broadcasting of batch dimensions.
+
+        Args:
+            node_proto: ONNX node protocol buffer
+            input_tensors: Dictionary of input tensor information
+            output_tensors: Dictionary of output tensor information
+            attrs: Extracted attributes (MatMul has no attributes, but kept for consistency)
+            node_index: Index of the node in the graph
+            graph_proto: Optional graph protocol buffer
+            opset: Opset version (default: 1)
+
+        Returns:
+            List containing a single MatMulNode instance
+
+        Raises:
+            ValueError: If inputs are invalid or shapes are incompatible
+        """
+        # Validate inputs
+        if len(node_proto.input) != 2:
+            raise ValueError(
+                f"MatMul node {node_proto.name or f'MatMul_{node_index}'}: "
+                f"Expected 2 inputs, got {len(node_proto.input)}"
+            )
+
+        # Get input tensor info
+        input_a_name = node_proto.input[0]
+        input_b_name = node_proto.input[1]
+
+        if input_a_name not in input_tensors:
+            raise ValueError(
+                f"MatMul node {node_proto.name or f'MatMul_{node_index}'}: "
+                f"Input A '{input_a_name}' not found in input_tensors"
+            )
+        if input_b_name not in input_tensors:
+            raise ValueError(
+                f"MatMul node {node_proto.name or f'MatMul_{node_index}'}: "
+                f"Input B '{input_b_name}' not found in input_tensors"
+            )
+
+        tensor_a = input_tensors[input_a_name]
+        tensor_b = input_tensors[input_b_name]
+
+        # Validate shapes and compute output shape
+        node_name = node_proto.name or f"MatMul_{node_index}"
+        shape_a, shape_b, output_shape = _validate_matmul_shapes(node_name, tensor_a.shape, tensor_b.shape, opset)
+
+        # Update output tensor shape if we computed it
+        if output_shape is not None and len(output_tensors) > 0:
+            output_name = list(output_tensors.keys())[0]
+            # Update the output tensor info with computed shape
+            output_tensors[output_name] = TensorInfo(
+                name=output_name,
+                shape=output_shape,
+                onnx_dtype=tensor_a.onnx_dtype,  # Output dtype matches input dtype
+            )
+
+        # Build OrderedDict for inputs and outputs
+        input_dict, output_dict = build_input_output_dicts(node_proto, input_tensors, output_tensors)
+
+        # Create and return MatMulNode
+        # MatMulNode uses torch.matmul which handles:
+        # - Standard 2D matrix multiplication
+        # - N-dimensional batched matrix multiplication
+        # - Broadcasting of batch dimensions automatically
+        return [MatMulNode.create(name=node_name, inputs=input_dict, outputs=output_dict)]

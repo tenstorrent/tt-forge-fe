@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 """
-Activation operations: Relu, Sigmoid, Tanh, Softmax, LogSoftmax, LeakyRelu, Dropout
+Activation operations: Relu, Sigmoid, Tanh, Softmax, LogSoftmax, LeakyRelu, Dropout, Sqrt
 """
 import torch
 import torch.nn.functional as F
@@ -359,3 +359,30 @@ class DropoutNode(TIRNode):
             output = x
 
         return {self.output_names[0]: output}
+
+
+class SqrtNode(TIRNode):
+    """
+    PyTorch-like Sqrt operation.
+
+    Performs element-wise square root: y = x^0.5
+    If x is negative, returns NaN.
+    """
+
+    @staticmethod
+    def create(name: str, inputs: OrderedDict[str, TensorInfo], outputs: OrderedDict[str, TensorInfo]) -> "SqrtNode":
+        """Static factory method to create a SqrtNode."""
+        return SqrtNode(name=name, op_type="Sqrt", inputs=inputs, outputs=outputs, attrs={}, forge_op_name="Sqrt")
+
+    def eval(self, input_tensors: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """
+        Evaluate Sqrt operation using PyTorch.
+
+        Args:
+            input_tensors: Dictionary mapping input names to tensors
+
+        Returns:
+            Dictionary mapping output name to result tensor
+        """
+        x = input_tensors[self.input_names[0]]
+        return {self.output_names[0]: torch.sqrt(x)}

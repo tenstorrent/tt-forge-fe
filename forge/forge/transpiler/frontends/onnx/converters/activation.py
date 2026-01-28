@@ -9,6 +9,7 @@ This module provides converters for ONNX activation operations:
 - Softmax, LogSoftmax: Normalization operations with dimension parameter
 - LeakyRelu: Parametric activation with negative slope
 - Dropout: Stochastic regularization operation with training/inference modes
+- Sqrt: Element-wise square root operation
 
 All converters follow the OnnxOpConverter pattern and handle opset version differences
 where applicable.
@@ -25,6 +26,7 @@ from forge.transpiler.operations.activation import (
     LogSoftmaxNode,
     LeakyReluNode,
     DropoutNode,
+    SqrtNode,
 )
 from forge.transpiler.operations.other import IdentityNode
 from forge.transpiler.frontends.onnx.converters.base import OnnxOpConverter
@@ -517,3 +519,48 @@ class DropoutConverter(OnnxOpConverter):
 
         # Create node (with optimizations)
         return cls._create_dropout_node(node_proto, input_tensors, output_tensors, ratio, training, seed, node_index)
+
+
+class SqrtConverter(OnnxOpConverter):
+    """
+    Converter for ONNX Sqrt operation.
+
+    Converts ONNX Sqrt to TIR SqrtNode. Sqrt is an element-wise operation:
+    output = x^0.5. If x is negative, returns NaN.
+    """
+
+    @classmethod
+    def convert(
+        cls,
+        node_proto: NodeProto,
+        input_tensors: OrderedDict[str, TensorInfo],
+        output_tensors: OrderedDict[str, TensorInfo],
+        attrs: Dict[str, Any],
+        node_index: int,
+        graph_proto=None,
+        opset: int = 1,
+    ) -> List:
+        """
+        Convert ONNX Sqrt operation to TIR SqrtNode.
+
+        Sqrt opset v1+: No version differences in converter logic.
+        The 'consumed_inputs' attribute in v1 is a legacy optimization attribute
+        and should be ignored. Type constraints (bfloat16 in v13+) are handled
+        by ONNX shape inference, not the converter.
+
+        Args:
+            node_proto: ONNX node protocol buffer
+            input_tensors: Dictionary mapping input names to TensorInfo
+            output_tensors: Dictionary mapping output names to TensorInfo
+            attrs: Extracted attributes (consumed_inputs is ignored)
+            node_index: Index of node in graph
+            graph_proto: ONNX graph protocol buffer (unused)
+            opset: Opset version (unused, no version differences)
+
+        Returns:
+            List containing a single SqrtNode
+        """
+        node_name = node_proto.name if node_proto.name else f"Sqrt_{node_index}"
+        input_dict, output_dict = build_input_output_dicts(node_proto, input_tensors, output_tensors)
+
+        return [SqrtNode.create(name=node_name, inputs=input_dict, outputs=output_dict)]
