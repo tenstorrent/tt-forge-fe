@@ -53,8 +53,8 @@ def test_linear_ae_pytorch(forge_tmp_path):
     )
 
     # Load sample from MNIST dataset
-    dataset = load_dataset("mnist")
-    sample = dataset["train"][0]["image"]
+    dataset = load_dataset("ylecun/mnist", split="train")
+    sample = dataset[0]["image"]
     sample_tensor = transform(sample).squeeze(0)
 
     inputs = [sample_tensor]
