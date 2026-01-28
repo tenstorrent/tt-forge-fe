@@ -48,7 +48,11 @@ from forge.transpiler.frontends.onnx.converters.reduction import (
     ReduceMeanConverter,
     ReduceMaxConverter,
 )
-from forge.transpiler.frontends.onnx.converters.pooling import MaxPoolConverter, AveragePoolConverter
+from forge.transpiler.frontends.onnx.converters.pooling import (
+    MaxPoolConverter,
+    AveragePoolConverter,
+    GlobalAveragePoolConverter,
+)
 from forge.transpiler.frontends.onnx.converters.shape import TransposeConverter, CastConverter, FlattenConverter
 from forge.transpiler.frontends.onnx.converters.constant import ConstantConverter
 from forge.transpiler.frontends.onnx.converters.converter_result import ConverterResult, is_constant_result
@@ -509,6 +513,7 @@ class ONNXToForgeTranspiler:
             # Pooling operations
             "MaxPool": MaxPoolConverter.get_converter(opset),
             "AveragePool": AveragePoolConverter.get_converter(opset),
+            "GlobalAveragePool": GlobalAveragePoolConverter.get_converter(opset),
             # Shape operations
             "Transpose": TransposeConverter.get_converter(opset),
             "Cast": CastConverter.get_converter(opset),
