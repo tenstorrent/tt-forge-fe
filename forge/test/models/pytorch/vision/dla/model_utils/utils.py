@@ -15,7 +15,7 @@ def load_dla_model(variant):
     func = getattr(dla_model, variant)
 
     # Load data sample
-    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    dataset = load_dataset("ILSVRC/imagenet-1k", split="validation", streaming=True)
     image = next(iter(dataset))["image"]
 
     # Preprocessing

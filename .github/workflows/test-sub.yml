@@ -241,6 +241,7 @@ jobs:
           fi
           echo "Collected tests."
           cp .pytest_tests_to_run collected_test_list
+          cat .pytest_tests_to_run
 
       - name: Upload collected tests
         uses: actions/upload-artifact@v4

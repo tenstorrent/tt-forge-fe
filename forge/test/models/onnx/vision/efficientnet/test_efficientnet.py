@@ -49,7 +49,7 @@ def test_efficientnet_onnx(variant, forge_tmp_path):
     model = timm.create_model(variant, pretrained=True)
 
     # Load the inputs
-    dataset = load_dataset("imagenet-1k", split="validation", streaming=True)
+    dataset = load_dataset("ILSVRC/imagenet-1k", split="validation", streaming=True)
     img = next(iter(dataset.skip(10)))["image"]
     inputs = load_inputs(img, model)
     onnx_path = f"{forge_tmp_path}/efficientnet.onnx"
